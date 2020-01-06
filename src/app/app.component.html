@@ -9,18 +9,54 @@
         <ion-content>
             <ion-list>
                 <ion-menu-toggle menu="sideMenu">
-                    <ion-item lines="none" routerLink="/places/tabs/search">
+                    <ion-item lines="none" routerLink="/admin/headquarters">
                         <ion-icon name="business" slot="start"></ion-icon>
-                        <ion-label>Search Places</ion-label>
+                        <ion-label>Headquarters</ion-label>
                     </ion-item>
                 </ion-menu-toggle>
 
                 <ion-menu-toggle menu="sideMenu">
-                    <ion-item lines="none" routerLink="/bookings">
-                        <ion-icon name="checkbox-outline" slot="start"></ion-icon>
-                        <ion-label>Your Bookings</ion-label>
+                    <ion-item lines="none" routerLink="/admin/employees">
+                        <ion-icon name="contacts" slot="start"></ion-icon>
+                        <ion-label>Employees</ion-label>
                     </ion-item>
                 </ion-menu-toggle>
+
+                <ion-menu-toggle menu="sideMenu">
+                    <ion-item lines="none" routerLink="/admin/dishes">
+                        <ion-icon name="restaurant" slot="start"></ion-icon>
+                        <ion-label>Dishes</ion-label>
+                    </ion-item>
+                </ion-menu-toggle>
+
+                <ion-menu-toggle menu="sideMenu">
+                    <ion-item lines="none" routerLink="/admin/suppliers">
+                        <ion-icon name="globe" slot="start"></ion-icon>
+                        <ion-label>Suppliers</ion-label>
+                    </ion-item>
+                </ion-menu-toggle>
+
+                <ion-menu-toggle menu="sideMenu">
+                    <ion-item lines="none" routerLink="/admin/menus">
+                        <ion-icon name="paper" slot="start"></ion-icon>
+                        <ion-label>Menus</ion-label>
+                    </ion-item>
+                </ion-menu-toggle>
+
+                <ion-menu-toggle menu="sideMenu">
+                    <ion-item lines="none" routerLink="/admin/events">
+                        <ion-icon name="filing" slot="start"></ion-icon>
+                        <ion-label>Events</ion-label>
+                    </ion-item>
+                </ion-menu-toggle>
+
+                <ion-menu-toggle menu="sideMenu">
+                    <ion-item lines="none" routerLink="/admin/services">
+                        <ion-icon name="today" slot="start"></ion-icon>
+                        <ion-label>Services</ion-label>
+                    </ion-item>
+                </ion-menu-toggle>
+
                 <ion-menu-toggle menu="sideMenu">
                     <ion-item lines="none" (click)="onLogout()">
                         <ion-icon name="exit" slot="start"></ion-icon>
