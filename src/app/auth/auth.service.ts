@@ -22,36 +22,11 @@ const USER = 3;
     providedIn: 'root'
 })
 export class AuthService implements OnDestroy {
-
-    get adminIsAuthenticated() {
-        return this._user.asObservable().pipe(
-            map(user => {
-                if (user) {
-                    return !!user.token && user.roleId === ADMINISTRATOR;
-                } else {
-                    return false;
-                }
-            })
-        );
-    }
-
-    get employeeIsAuthenticated() {
-        return this._user.asObservable().pipe(
-            map(user => {
-                if (user) {
-                    return !!user.token && user.roleId === EMPLOYEE;
-                } else {
-                    return false;
-                }
-            })
-        );
-    }
-
     get userIsAuthenticated() {
         return this._user.asObservable().pipe(
             map(user => {
                 if (user) {
-                    return !!user.token && user.roleId === USER;
+                    return !!user.token;
                 } else {
                     return false;
                 }
@@ -66,6 +41,42 @@ export class AuthService implements OnDestroy {
                     return user.id;
                 } else {
                     return null;
+                }
+            })
+        );
+    }
+
+    isAdmin() {
+        return this._user.asObservable().pipe(
+            map(user => {
+                if (user) {
+                    return user.roleId === ADMINISTRATOR;
+                } else {
+                    return false;
+                }
+            })
+        );
+    }
+
+    isEmployee() {
+        return this._user.asObservable().pipe(
+            map(user => {
+                if (user) {
+                    return user.roleId === EMPLOYEE;
+                } else {
+                    return false;
+                }
+            })
+        );
+    }
+
+    isUser() {
+        return this._user.asObservable().pipe(
+            map(user => {
+                if (user) {
+                    return user.roleId === USER;
+                } else {
+                    return false;
                 }
             })
         );
@@ -208,11 +219,11 @@ export class AuthService implements OnDestroy {
     getUrlByRole(roleId: number) {
         switch (roleId) {
             case ADMINISTRATOR:
-                return '/admin/home';
+                return '/admin';
             case EMPLOYEE:
-                return '/employee/home';
+                return '/employee';
             case USER:
-                return '/user/home';
+                return '/user';
         }
     }
 }

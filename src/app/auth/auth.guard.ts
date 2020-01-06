@@ -4,14 +4,14 @@ import {
     Route, Router,
     UrlSegment
 } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { AuthService } from './auth.service';
-import { take, tap } from 'rxjs/operators';
+import { switchMap, take, tap } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
 })
-export class AuthUserGuard implements CanLoad {
+export class AuthGuard implements CanLoad {
     constructor(private authService: AuthService, private router: Router) {
     }
 
@@ -19,9 +19,16 @@ export class AuthUserGuard implements CanLoad {
         route: Route,
         segments: UrlSegment[]
     ): Observable<boolean> | Promise<boolean> | boolean {
-        return this.authService.isUser()
+        return this.authService.userIsAuthenticated
             .pipe(
                 take(1),
+                switchMap(isAuthenticated => {
+                    if (!isAuthenticated) {
+                        return this.authService.autoLogin();
+                    } else {
+                        return of(isAuthenticated);
+                    }
+                }),
                 tap(isAuthenticated => {
                     if (!isAuthenticated) {
                         this.router.navigateByUrl('/auth');

@@ -3,6 +3,7 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthAdminGuard } from './auth/auth.admin.guard';
 import { AuthEmployeeGuard } from './auth/auth.employee.guard';
 import { AuthUserGuard } from './auth/auth.user.guard';
+import { AuthGuard } from './auth/auth.guard';
 
 const routes: Routes = [
     {path: '', redirectTo: 'auth', pathMatch: 'full'},
@@ -15,19 +16,19 @@ const routes: Routes = [
         loadChildren: () => import('./signup/signup.module').then(m => m.SignupPageModule)
     },
     {
-        path: 'admin/home',
-        loadChildren: () => import('./admin/home/home.module').then(m => m.HomePageModule),
-        canLoad: [AuthAdminGuard]
+        path: 'admin',
+        loadChildren: () => import('./admin/admin.module').then(m => m.AdminPageModule),
+        canLoad: [AuthGuard, AuthAdminGuard]
     },
     {
-        path: 'employee/home',
-        loadChildren: () => import('./employee/home/home.module').then(m => m.HomePageModule),
-        canLoad: [AuthEmployeeGuard]
+        path: 'employee',
+        loadChildren: () => import('./employee/employee.module').then(m => m.EmployeePageModule),
+        canLoad: [AuthGuard, AuthEmployeeGuard]
     },
     {
-        path: 'user/home',
-        loadChildren: () => import('./user/home/home.module').then(m => m.HomePageModule),
-        canLoad: [AuthUserGuard]
+        path: 'user',
+        loadChildren: () => import('./user/user.module').then(m => m.UserPageModule),
+        canLoad: [AuthGuard, AuthUserGuard]
     },
 ];
 
