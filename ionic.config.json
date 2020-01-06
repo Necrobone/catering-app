@@ -1,5 +1,7 @@
 {
   "name": "catering-and-go",
-  "integrations": {},
+  "integrations": {
+    "capacitor": {}
+  },
   "type": "angular"
 }
