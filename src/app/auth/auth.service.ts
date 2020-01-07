@@ -22,6 +22,36 @@ const USER = 3;
     providedIn: 'root'
 })
 export class AuthService implements OnDestroy {
+    constructor(private http: HttpClient) {
+    }
+
+    private _user = new BehaviorSubject<User>(null);
+    private activeLogoutTimer: any;
+
+    private static storeAuthData(
+        userId: number,
+        token: string,
+        tokenExpirationDate: string,
+        email: string,
+        firstName: string,
+        lastName: string,
+        roleId: number
+    ) {
+        const data = JSON.stringify({userId, token, tokenExpirationDate, email, firstName, lastName, roleId});
+        Plugins.Storage.set({key: 'authData', value: data});
+    }
+    get token() {
+        return this._user.asObservable().pipe(
+            map(user => {
+                if (user) {
+                    return user.token;
+                } else {
+                    return null;
+                }
+            })
+        );
+    }
+
     get userIsAuthenticated() {
         return this._user.asObservable().pipe(
             map(user => {
@@ -80,25 +110,6 @@ export class AuthService implements OnDestroy {
                 }
             })
         );
-    }
-
-    constructor(private http: HttpClient) {
-    }
-
-    private _user = new BehaviorSubject<User>(null);
-    private activeLogoutTimer: any;
-
-    private static storeAuthData(
-        userId: number,
-        token: string,
-        tokenExpirationDate: string,
-        email: string,
-        firstName: string,
-        lastName: string,
-        roleId: number
-    ) {
-        const data = JSON.stringify({userId, token, tokenExpirationDate, email, firstName, lastName, roleId});
-        Plugins.Storage.set({key: 'authData', value: data});
     }
 
     autoLogin() {

@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { IonInfiniteScroll } from '@ionic/angular';
+import { IonInfiniteScroll, LoadingController } from '@ionic/angular';
 import { Headquarter } from './headquarter.model';
+import { Subscription } from "rxjs";
+import { HeadquartersService } from "./headquarters.service";
 
 @Component({
     selector: 'app-headquarters',
@@ -10,8 +12,9 @@ import { Headquarter } from './headquarter.model';
 export class HeadquartersPage implements OnInit {
     @ViewChild(IonInfiniteScroll, {read: undefined, static: false}) infiniteScroll: IonInfiniteScroll;
     headquarters: Headquarter[];
+    private subscription: Subscription;
 
-    constructor() {
+    constructor(private headquartersService: HeadquartersService, private loadingController: LoadingController) {
         this.headquarters = [];
         for (let i = 0; i < 10; i++) {
             const headquarter = new Headquarter(
@@ -30,30 +33,26 @@ export class HeadquartersPage implements OnInit {
     }
 
     ngOnInit() {
+        this.subscription = this.headquartersService.headquarters.subscribe(headquarters => {
+            this.headquarters = headquarters;
+        });
+    }
+
+    ionViewWillEnter() {
+        this.loadingController.create({
+            message: 'Fetching...',
+        }).then(loadingEl => {
+            loadingEl.present();
+            this.headquartersService.fetch().subscribe(() => {
+                loadingEl.dismiss();
+            });
+        });
     }
 
     doRefresh(event) {
-        console.log('Begin async operation');
-
-        setTimeout(() => {
-            console.log('Async operation has ended');
+        this.headquartersService.fetch().subscribe(() => {
             event.target.complete();
-        }, 2000);
-
-        for (let i = 0; i < 10; i++) {
-            const headquarter = new Headquarter(
-                i,
-                'Sede',
-                'C/ Acentejo 4, 1º Izquierda',
-                '28017',
-                'Madrid',
-                28,
-                new Date(),
-                null,
-                null,
-            );
-            this.headquarters.push(headquarter);
-        }
+        });
     }
 
     loadData(event) {
