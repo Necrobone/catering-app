@@ -52,7 +52,7 @@ export class HeadquartersService {
 
     getHeadquarter(id: number) {
         return this.http
-            .get<Headquarter>(`https://ionic-5c5e9.firebaseio.com/offered-places/${id}.json`)
+            .get<Headquarter>(`http://api.test/api/headquarters/${id}?api_token=cnRmsou5IIdU1eEhmNajBA91taYVPMTubdHu4dJ52PhNoJYv16`)
             .pipe(map(headquarter => {
                 return new Headquarter(
                     id,
@@ -135,7 +135,7 @@ export class HeadquartersService {
                     oldHeadquarter.deletedAt
                 );
                 return this.http.put(
-                    `https://ionic-5c5e9.firebaseio.com/offered-places/${id}.json`,
+                    `http://api.test/api/headquarters/${id}?api_token=cnRmsou5IIdU1eEhmNajBA91taYVPMTubdHu4dJ52PhNoJYv16`,
                     {...updatedHeadquarters[updatedHeadquarterIndex], id: null}
                 );
             }),
@@ -143,5 +143,28 @@ export class HeadquartersService {
                 this._headquarters.next(updatedHeadquarters);
             })
         );
+    }
+
+    delete(id: number) {
+        return this.authService.userId
+            .pipe(
+                take(1),
+                switchMap(userId => {
+                    if (!userId) {
+                        throw new Error('No user found!');
+                    }
+
+                    return this.http.delete(
+                        `http://api.test/api/headquarters/${id}?api_token=cnRmsou5IIdU1eEhmNajBA91taYVPMTubdHu4dJ52PhNoJYv16`
+                    );
+                }),
+                switchMap(() => {
+                    return this.headquarters;
+                }),
+                take(1),
+                tap(headquarters => {
+                    this._headquarters.next(headquarters.filter(hq => hq.id !== id));
+                })
+            );
     }
 }
