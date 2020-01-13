@@ -72,10 +72,13 @@ export class EditPage implements OnInit, OnDestroy {
                         updateOn: 'blur',
                         validators: [Validators.required, Validators.maxLength(255)]
                     }),
-                    province: new FormControl(this.headquarter.provinceId, {
-                        updateOn: 'blur',
-                        validators: [Validators.required, Validators.min(1)]
-                    })
+                    province: new FormControl(
+                        typeof this.headquarter.province === 'number' ? this.headquarter.province : this.headquarter.province.id,
+                        {
+                            updateOn: 'blur',
+                            validators: [Validators.required, Validators.min(1)]
+                        }
+                    )
                 });
             }, error => {
                 this.alertController.create({
@@ -105,6 +108,8 @@ export class EditPage implements OnInit, OnDestroy {
     }
 
     selectedProvince = (province1: Province, province2: Province): boolean => {
+        console.log(province1);
+        console.log(province2);
         return province1 && province2 ? province1.id === province2.id : province1 === province2;
     }
 
@@ -123,7 +128,7 @@ export class EditPage implements OnInit, OnDestroy {
                 this.form.value.address,
                 this.form.value.zip,
                 this.form.value.city,
-                this.form.value.province
+                +this.form.value.province
             ).subscribe(() => {
                 loadingEl.dismiss();
                 this.form.reset();

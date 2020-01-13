@@ -157,7 +157,7 @@ export class AuthService implements OnDestroy {
 
     signup(email: string, password: string) {
         return this.http.post<AuthResponseData>(
-            `http://api.test/api/user?api_token=cnRmsou5IIdU1eEhmNajBA91taYVPMTubdHu4dJ52PhNoJYv16`,
+            `http://api.test/api/user?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw`,
             {
                 email,
                 password,
@@ -168,7 +168,7 @@ export class AuthService implements OnDestroy {
 
     login(email: string, password: string) {
         return this.http.get<AuthResponseData>(
-            `http://api.test/api/user?api_token=cnRmsou5IIdU1eEhmNajBA91taYVPMTubdHu4dJ52PhNoJYv16`,
+            `http://api.test/api/user?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw`,
             // {
             //     email,
             //     password,

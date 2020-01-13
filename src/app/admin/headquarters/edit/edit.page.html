@@ -56,9 +56,7 @@
                     <ion-item>
                         <ion-label>Province</ion-label>
                         <ion-select placeholder="Select One" formControlName="province">
-                            <ion-select-option *ngFor="let province of provinces" [value]="province.id">
-                                {{ province.name }}
-                            </ion-select-option>
+                            <ion-select-option *ngFor="let province of provinces" [value]="province.id">{{ province.name }}</ion-select-option>
                         </ion-select>
                     </ion-item>
                 </ion-col>

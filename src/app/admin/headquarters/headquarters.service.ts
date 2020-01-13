@@ -4,6 +4,7 @@ import { map, switchMap, take, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Headquarter } from './headquarter.model';
 import { AuthService } from '../../auth/auth.service';
+import { Province } from '../../province.model';
 
 @Injectable({
     providedIn: 'root'
@@ -21,20 +22,20 @@ export class HeadquartersService {
     fetch() {
         return this.http
             .get<{ [key: string]: Headquarter }>(
-                'http://api.test/api/headquarters?api_token=cnRmsou5IIdU1eEhmNajBA91taYVPMTubdHu4dJ52PhNoJYv16'
+                'http://api.test/api/headquarters?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw'
             )
             .pipe(
                 map(headquarters => {
-                    const places = [];
+                    const hqs = [];
                     for (const key in headquarters) {
                         if (headquarters.hasOwnProperty(key)) {
-                            places.push(new Headquarter(
+                            hqs.push(new Headquarter(
                                 +headquarters[key].id,
                                 headquarters[key].name,
                                 headquarters[key].address,
                                 headquarters[key].zip,
                                 headquarters[key].city,
-                                headquarters[key].provinceId,
+                                headquarters[key].province,
                                 headquarters[key].createdAt,
                                 headquarters[key].updatedAt,
                                 headquarters[key].deletedAt
@@ -42,17 +43,17 @@ export class HeadquartersService {
                         }
                     }
 
-                    return places;
+                    return hqs;
                 }),
-                tap(places => {
-                    this._headquarters.next(places);
+                tap(headquarters => {
+                    this._headquarters.next(headquarters);
                 })
             );
     }
 
     getHeadquarter(id: number) {
         return this.http
-            .get<Headquarter>(`http://api.test/api/headquarters/${id}?api_token=cnRmsou5IIdU1eEhmNajBA91taYVPMTubdHu4dJ52PhNoJYv16`)
+            .get<Headquarter>(`http://api.test/api/headquarters/${id}?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw`)
             .pipe(map(headquarter => {
                 return new Headquarter(
                     id,
@@ -60,7 +61,7 @@ export class HeadquartersService {
                     headquarter.address,
                     headquarter.zip,
                     headquarter.city,
-                    headquarter.provinceId,
+                    headquarter.province,
                     headquarter.createdAt,
                     headquarter.updatedAt,
                     headquarter.deletedAt
@@ -68,7 +69,7 @@ export class HeadquartersService {
             }));
     }
 
-    add(name: string, address: string, zip: string, city: string, provinceId: number) {
+    add(name: string, address: string, zip: string, city: string, province: number) {
         let generatedId: number;
         let newHeadquarter: Headquarter;
         return this.authService.userId
@@ -85,13 +86,13 @@ export class HeadquartersService {
                         address,
                         zip,
                         city,
-                        provinceId,
+                        province,
                         new Date(),
                         null,
                         null
                     );
                     return this.http.post<{ id: number }>(
-                        'http://api.test/api/headquarters?api_token=cnRmsou5IIdU1eEhmNajBA91taYVPMTubdHu4dJ52PhNoJYv16',
+                        'http://api.test/api/headquarters?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw',
                         {...newHeadquarter, id: null}
                     );
                 }),
@@ -107,7 +108,7 @@ export class HeadquartersService {
             );
     }
 
-    edit(id: number, name: string, address: string, zip: string, city: string, provinceId: number) {
+    edit(id: number, name: string, address: string, zip: string, city: string, province: number) {
         let updatedHeadquarters: Headquarter[];
         return this.headquarters.pipe(
             take(1),
@@ -129,13 +130,13 @@ export class HeadquartersService {
                     address,
                     zip,
                     city,
-                    provinceId,
+                    province,
                     oldHeadquarter.createdAt,
                     new Date(),
                     oldHeadquarter.deletedAt
                 );
                 return this.http.put(
-                    `http://api.test/api/headquarters/${id}?api_token=cnRmsou5IIdU1eEhmNajBA91taYVPMTubdHu4dJ52PhNoJYv16`,
+                    `http://api.test/api/headquarters/${id}?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw`,
                     {...updatedHeadquarters[updatedHeadquarterIndex], id: null}
                 );
             }),
@@ -155,7 +156,7 @@ export class HeadquartersService {
                     }
 
                     return this.http.delete(
-                        `http://api.test/api/headquarters/${id}?api_token=cnRmsou5IIdU1eEhmNajBA91taYVPMTubdHu4dJ52PhNoJYv16`
+                        `http://api.test/api/headquarters/${id}?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw`
                     );
                 }),
                 switchMap(() => {

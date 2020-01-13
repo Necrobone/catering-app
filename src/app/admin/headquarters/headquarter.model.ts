@@ -1,3 +1,5 @@
+import { Province } from '../../province.model';
+
 export class Headquarter {
     constructor(
         public id: number,
@@ -5,7 +7,7 @@ export class Headquarter {
         public address: string,
         public zip: string,
         public city: string,
-        public provinceId: number,
+        public province: Province|number,
         public createdAt: Date,
         public updatedAt: Date|null,
         public deletedAt: Date|null

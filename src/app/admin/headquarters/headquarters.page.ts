@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { IonInfiniteScroll, LoadingController } from '@ionic/angular';
 import { Headquarter } from './headquarter.model';
-import { Subscription } from "rxjs";
-import { HeadquartersService } from "./headquarters.service";
+import { Subscription } from 'rxjs';
+import { HeadquartersService } from './headquarters.service';
 
 @Component({
     selector: 'app-headquarters',
@@ -16,20 +16,6 @@ export class HeadquartersPage implements OnInit {
 
     constructor(private headquartersService: HeadquartersService, private loadingController: LoadingController) {
         this.headquarters = [];
-        for (let i = 0; i < 10; i++) {
-            const headquarter = new Headquarter(
-                i,
-                'Sede',
-                'C/ Acentejo 4, 1º Izquierda',
-                '28017',
-                'Madrid',
-                28,
-                new Date(),
-                null,
-                null,
-            );
-            this.headquarters.push(headquarter);
-        }
     }
 
     ngOnInit() {
@@ -56,32 +42,8 @@ export class HeadquartersPage implements OnInit {
     }
 
     loadData(event) {
-        const data = [{
-            text: 'text',
-        }];
-        setTimeout(() => {
-            console.log('Done');
-            for (let i = 0; i < 10; i++) {
-                const headquarter = new Headquarter(
-                    i,
-                    'Sede',
-                    'C/ Acentejo 4, 1º Izquierda',
-                    '28017',
-                    'Madrid',
-                    28,
-                    new Date(),
-                    null,
-                    null,
-                );
-                this.headquarters.push(headquarter);
-            }
+        this.headquartersService.fetch().subscribe(() => {
             event.target.complete();
-
-            // App logic to determine if all data is loaded
-            // and disable the infinite scroll
-            if (data.length === 1000) {
-                event.target.disabled = true;
-            }
-        }, 500);
+        });
     }
 }

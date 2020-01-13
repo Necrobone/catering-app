@@ -20,7 +20,7 @@ export class ProvincesService {
 
     fetch() {
         return this.http
-            .get<{ [key: number]: Province }>('http://api.test/api/provinces?api_token=cnRmsou5IIdU1eEhmNajBA91taYVPMTubdHu4dJ52PhNoJYv16')
+            .get<{ [key: number]: Province }>('http://api.test/api/provinces?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw')
             .pipe(
                 map(provinces => {
                     const result = [];
