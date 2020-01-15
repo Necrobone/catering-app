@@ -20,10 +20,12 @@
 
     <ion-list>
         <ion-item *ngFor="let dish of dishes" [href]="'/admin/dishes/edit/' + dish.id" detail>
+            <ion-avatar slot="start">
+                <ion-img [src]="dish.image"></ion-img>
+            </ion-avatar>
             <ion-label>
                 <h2>{{ dish.name }}</h2>
-                <h3>{{ dish.description }}</h3>
-                <p>{{ dish.image }}</p>
+                <p>{{ dish.description }}</p>
             </ion-label>
         </ion-item>
     </ion-list>
