@@ -1,0 +1,37 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-back-button defaultHref="/admin/menus"></ion-back-button>
+        </ion-buttons>
+        <ion-title>Edit Menu</ion-title>
+        <ion-buttons slot="primary">
+            <ion-button (click)="onEdit()" [disabled]="!form?.valid">
+                <ion-icon name="checkmark" slot="icon-only"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <form *ngIf="form" [formGroup]="form">
+        <ion-grid>
+            <ion-row>
+                <ion-col size-sm="6" offset-sm="3">
+                    <ion-item>
+                        <ion-label position="floating">Name</ion-label>
+                        <ion-input type="text" autocomplete autocorrect formControlName="name"
+                                   maxlength="255"></ion-input>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col size-sm="6" offset-sm="3">
+                    <ion-button (click)="onDestroy()">
+                        <ion-icon name="trash" slot="icon-only"></ion-icon>
+                        Delete Menu
+                    </ion-button>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+    </form>
+</ion-content>
