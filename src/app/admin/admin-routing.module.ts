@@ -23,6 +23,10 @@ const routes: Routes = [
   {
     path: 'menus',
     loadChildren: () => import('./menus/menus.module').then( m => m.MenusPageModule)
+  },
+  {
+    path: 'events',
+    loadChildren: () => import('./events/events.module').then( m => m.EventsPageModule)
   }
 ];
 
