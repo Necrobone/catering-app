@@ -19,10 +19,10 @@
                         </ion-item>
                         <ion-item>
                             <ion-label position="floating">Password</ion-label>
-                            <ion-input type="password" ngModel name="password" required minlength="6" #passwordController="ngModel"></ion-input>
+                            <ion-input type="password" ngModel name="password" required minlength="8" #passwordController="ngModel"></ion-input>
                         </ion-item>
                         <ion-item *ngIf="!passwordController.valid && passwordController.touched" lines="none">
-                            <ion-label>Should be minimum 6 password long.</ion-label>
+                            <ion-label>Should be minimum 8 password long.</ion-label>
                         </ion-item>
                     </ion-list>
                 </ion-col>
