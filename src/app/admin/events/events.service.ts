@@ -147,7 +147,7 @@ export class EventsService {
                 }),
                 take(1),
                 tap(events => {
-                    this._events.next(events.filter(ds => ds.id !== id));
+                    this._events.next(events.filter(event => event.id !== id));
                 })
             );
     }

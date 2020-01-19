@@ -17,6 +17,7 @@ export class EditPage implements OnInit, OnDestroy {
     form: FormGroup;
     provinces: Province[];
     headquarter: Headquarter;
+    formLoaded = false;
     private provinceSubscription: Subscription;
     private headquarterSubscription: Subscription;
 
@@ -72,13 +73,10 @@ export class EditPage implements OnInit, OnDestroy {
                         updateOn: 'blur',
                         validators: [Validators.required, Validators.maxLength(255)]
                     }),
-                    province: new FormControl(
-                        typeof this.headquarter.province === 'number' ? this.headquarter.province : this.headquarter.province.id,
-                        {
-                            updateOn: 'blur',
-                            validators: [Validators.required, Validators.min(1)]
-                        }
-                    )
+                    province: new FormControl(this.headquarter.provinceId, {
+                        updateOn: 'change',
+                        validators: [Validators.required, Validators.min(1)]
+                    }),
                 });
             }, error => {
                 this.alertController.create({
@@ -102,15 +100,10 @@ export class EditPage implements OnInit, OnDestroy {
         }).then(loadingEl => {
             loadingEl.present();
             this.provincesService.fetch().subscribe(() => {
+                this.formLoaded = true;
                 loadingEl.dismiss();
             });
         });
-    }
-
-    selectedProvince = (province1: Province, province2: Province): boolean => {
-        console.log(province1);
-        console.log(province2);
-        return province1 && province2 ? province1.id === province2.id : province1 === province2;
     }
 
     onEdit() {

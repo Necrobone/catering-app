@@ -16,17 +16,6 @@ export class SuppliersPage implements OnInit {
 
     constructor(private suppliersService: SuppliersService, private loadingController: LoadingController) {
         this.suppliers = [];
-        for (let i = 0; i < 10; i++) {
-            const supplier = new Supplier(
-                i,
-                'Sede',
-                [],
-                new Date(),
-                null,
-                null,
-            );
-            this.suppliers.push(supplier);
-        }
     }
 
     ngOnInit() {
@@ -53,29 +42,8 @@ export class SuppliersPage implements OnInit {
     }
 
     loadData(event) {
-        const data = [{
-            text: 'text',
-        }];
-        setTimeout(() => {
-            console.log('Done');
-            for (let i = 0; i < 10; i++) {
-                const supplier = new Supplier(
-                    i,
-                    'Sede',
-                    [],
-                    new Date(),
-                    null,
-                    null,
-                );
-                this.suppliers.push(supplier);
-            }
+        this.suppliersService.fetch().subscribe(() => {
             event.target.complete();
-
-            // App logic to determine if all data is loaded
-            // and disable the infinite scroll
-            if (data.length === 1000) {
-                event.target.disabled = true;
-            }
-        }, 500);
+        });
     }
 }

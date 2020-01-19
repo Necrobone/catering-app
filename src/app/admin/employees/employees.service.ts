@@ -167,7 +167,7 @@ export class EmployeesService {
                 }),
                 take(1),
                 tap(employees => {
-                    this._employees.next(employees.filter(hq => hq.id !== id));
+                    this._employees.next(employees.filter(employee => employee.id !== id));
                 })
             );
     }

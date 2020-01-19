@@ -12,4 +12,8 @@ export class Headquarter {
         public updatedAt: Date|null,
         public deletedAt: Date|null
     ) {}
+
+    get provinceId() {
+        return typeof this.province === 'number' ? this.province : this.province.id;
+    }
 }

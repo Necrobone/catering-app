@@ -5,6 +5,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController, LoadingController, NavController } from '@ionic/angular';
 import { Supplier } from '../supplier.model';
 import { SuppliersService } from '../suppliers.service';
+import { Headquarter } from '../../headquarters/headquarter.model';
+import { HeadquartersService } from '../../headquarters/headquarters.service';
 
 @Component({
     selector: 'app-edit',
@@ -14,10 +16,14 @@ import { SuppliersService } from '../suppliers.service';
 export class EditPage implements OnInit, OnDestroy {
     form: FormGroup;
     supplier: Supplier;
+    headquarters: Headquarter[];
+    formLoaded = false;
     private subscription: Subscription;
+    private headquarterSubscription: Subscription;
 
     constructor(
         private suppliersService: SuppliersService,
+        private headquartersService: HeadquartersService,
         private router: Router,
         private loadingController: LoadingController,
         private route: ActivatedRoute,
@@ -33,12 +39,31 @@ export class EditPage implements OnInit, OnDestroy {
                 return;
             }
 
+            this.headquarterSubscription = this.headquartersService.headquarters.subscribe(headquarters => {
+                this.headquarters = headquarters;
+            }, error => {
+                this.alertController.create({
+                    header: 'An error ocurred!',
+                    message: 'Headquarters could not be fetched. Please try again later.',
+                    buttons: [{
+                        text: 'Okay', handler: () => {
+                            this.router.navigate(['admin/suppliers']);
+                        }
+                    }]
+                }).then(alertEl => {
+                    alertEl.present();
+                });
+            });
             this.subscription = this.suppliersService.getSupplier(+paramMap.get('id')).subscribe(supplier => {
                 this.supplier = supplier;
                 this.form = new FormGroup({
                     name: new FormControl(this.supplier.name, {
                         updateOn: 'blur',
                         validators: [Validators.required, Validators.maxLength(255)]
+                    }),
+                    headquarters: new FormControl(this.supplier.headquartersIds, {
+                        updateOn: 'blur',
+                        validators: [Validators.required]
                     }),
                 });
             }, error => {
@@ -57,6 +82,18 @@ export class EditPage implements OnInit, OnDestroy {
         });
     }
 
+    ionViewWillEnter() {
+        this.loadingController.create({
+            message: 'Fetching...',
+        }).then(loadingEl => {
+            loadingEl.present();
+            this.headquartersService.fetch().subscribe(() => {
+                this.formLoaded = true;
+                loadingEl.dismiss();
+            });
+        });
+    }
+
     onEdit() {
         if (!this.form.valid) {
             return;
@@ -69,6 +106,7 @@ export class EditPage implements OnInit, OnDestroy {
             this.suppliersService.edit(
                 this.supplier.id,
                 this.form.value.name,
+                this.form.value.headquarters,
             ).subscribe(() => {
                 loadingEl.dismiss();
                 this.form.reset();
@@ -107,6 +145,10 @@ export class EditPage implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         if (this.subscription) {
             this.subscription.unsubscribe();
+        }
+
+        if (this.headquarterSubscription) {
+            this.headquarterSubscription.unsubscribe();
         }
     }
 }

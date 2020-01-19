@@ -23,6 +23,16 @@
                     </ion-item>
                 </ion-col>
             </ion-row>
+            <ion-row>
+                <ion-col size-sm="6" offset-sm="3">
+                    <ion-item>
+                        <ion-label>Headquarters</ion-label>
+                        <ion-select multiple="true" placeholder="Select one or more" formControlName="headquarters">
+                            <ion-select-option *ngFor="let headquarter of headquarters" value="{{ headquarter.id }}">{{ headquarter.name }}</ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
         </ion-grid>
     </form>
 </ion-content>

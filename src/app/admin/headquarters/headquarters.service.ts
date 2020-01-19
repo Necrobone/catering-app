@@ -4,7 +4,6 @@ import { map, switchMap, take, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Headquarter } from './headquarter.model';
 import { AuthService } from '../../auth/auth.service';
-import { Province } from '../../province.model';
 
 @Injectable({
     providedIn: 'root'
@@ -164,7 +163,7 @@ export class HeadquartersService {
                 }),
                 take(1),
                 tap(headquarters => {
-                    this._headquarters.next(headquarters.filter(hq => hq.id !== id));
+                    this._headquarters.next(headquarters.filter(headquarter => headquarter.id !== id));
                 })
             );
     }

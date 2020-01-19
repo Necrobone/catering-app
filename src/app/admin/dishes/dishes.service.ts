@@ -155,7 +155,7 @@ export class DishesService {
                 }),
                 take(1),
                 tap(dishes => {
-                    this._dishes.next(dishes.filter(ds => ds.id !== id));
+                    this._dishes.next(dishes.filter(dish => dish.id !== id));
                 })
             );
     }

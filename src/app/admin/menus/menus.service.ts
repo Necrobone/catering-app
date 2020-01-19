@@ -147,7 +147,7 @@ export class MenusService {
                 }),
                 take(1),
                 tap(menus => {
-                    this._menus.next(menus.filter(ds => ds.id !== id));
+                    this._menus.next(menus.filter(menu => menu.id !== id));
                 })
             );
     }

@@ -31,6 +31,7 @@ export class SuppliersService {
                             places.push(new Supplier(
                                 +suppliers[key].id,
                                 suppliers[key].name,
+                                suppliers[key].headquarters,
                                 suppliers[key].createdAt,
                                 suppliers[key].updatedAt,
                                 suppliers[key].deletedAt
@@ -53,6 +54,7 @@ export class SuppliersService {
                 return new Supplier(
                     id,
                     supplier.name,
+                    supplier.headquarters,
                     supplier.createdAt,
                     supplier.updatedAt,
                     supplier.deletedAt
@@ -60,7 +62,7 @@ export class SuppliersService {
             }));
     }
 
-    add(name: string) {
+    add(name: string, headquarters: []) {
         let generatedId: number;
         let newSupplier: Supplier;
         return this.authService.userId
@@ -74,6 +76,7 @@ export class SuppliersService {
                     newSupplier = new Supplier(
                         Math.random(),
                         name,
+                        headquarters,
                         new Date(),
                         null,
                         null
@@ -95,7 +98,7 @@ export class SuppliersService {
             );
     }
 
-    edit(id: number, name: string) {
+    edit(id: number, name: string, headquarters: []) {
         let updatedSuppliers: Supplier[];
         return this.suppliers.pipe(
             take(1),
@@ -107,13 +110,14 @@ export class SuppliersService {
                 }
             }),
             switchMap(suppliers => {
-                const updatedSupplierIndex = suppliers.findIndex(hq => hq.id === id);
+                const updatedSupplierIndex = suppliers.findIndex(supplier => supplier.id === id);
                 updatedSuppliers = [...suppliers];
                 const oldSupplier = updatedSuppliers[updatedSupplierIndex];
 
                 updatedSuppliers[updatedSupplierIndex] = new Supplier(
                     oldSupplier.id,
                     name,
+                    headquarters,
                     oldSupplier.createdAt,
                     new Date(),
                     oldSupplier.deletedAt
@@ -147,7 +151,7 @@ export class SuppliersService {
                 }),
                 take(1),
                 tap(suppliers => {
-                    this._suppliers.next(suppliers.filter(hq => hq.id !== id));
+                    this._suppliers.next(suppliers.filter(supplier => supplier.id !== id));
                 })
             );
     }

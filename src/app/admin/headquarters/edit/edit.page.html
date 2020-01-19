@@ -13,14 +13,13 @@
 </ion-header>
 
 <ion-content>
-    <form *ngIf="form" [formGroup]="form">
+    <form *ngIf="formLoaded" [formGroup]="form">
         <ion-grid>
             <ion-row>
                 <ion-col size-sm="6" offset-sm="3">
                     <ion-item>
                         <ion-label position="floating">Name</ion-label>
-                        <ion-input type="text" autocomplete autocorrect formControlName="name"
-                                   maxlength="255"></ion-input>
+                        <ion-input type="text" autocomplete autocorrect formControlName="name" maxlength="255"></ion-input>
                     </ion-item>
                 </ion-col>
             </ion-row>
@@ -28,8 +27,7 @@
                 <ion-col size-sm="6" offset-sm="3">
                     <ion-item>
                         <ion-label position="floating">Address</ion-label>
-                        <ion-input type="text" autocomplete autocorrect formControlName="address"
-                                   maxlength="255"></ion-input>
+                        <ion-input type="text" autocomplete autocorrect formControlName="address" maxlength="255"></ion-input>
                     </ion-item>
                 </ion-col>
             </ion-row>
@@ -37,8 +35,7 @@
                 <ion-col size-sm="6" offset-sm="3">
                     <ion-item>
                         <ion-label position="floating">Zip</ion-label>
-                        <ion-input type="text" autocomplete autocorrect formControlName="zip"
-                                   maxlength="255"></ion-input>
+                        <ion-input type="text" autocomplete autocorrect formControlName="zip" maxlength="255"></ion-input>
                     </ion-item>
                 </ion-col>
             </ion-row>
@@ -46,8 +43,7 @@
                 <ion-col size-sm="6" offset-sm="3">
                     <ion-item>
                         <ion-label position="floating">City</ion-label>
-                        <ion-input type="text" autocomplete autocorrect formControlName="city"
-                                   maxlength="255"></ion-input>
+                        <ion-input type="text" autocomplete autocorrect formControlName="city" maxlength="255"></ion-input>
                     </ion-item>
                 </ion-col>
             </ion-row>
@@ -56,7 +52,9 @@
                     <ion-item>
                         <ion-label>Province</ion-label>
                         <ion-select placeholder="Select One" formControlName="province">
-                            <ion-select-option *ngFor="let province of provinces" [value]="province.id">{{ province.name }}</ion-select-option>
+                            <ion-select-option *ngFor="let province of provinces" [value]="province.id">
+                                {{ province.name }}
+                            </ion-select-option>
                         </ion-select>
                     </ion-item>
                 </ion-col>
