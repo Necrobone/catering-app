@@ -31,6 +31,8 @@ export class MenusService {
                             ms.push(new Menu(
                                 +menus[key].id,
                                 menus[key].name,
+                                menus[key].dishes,
+                                menus[key].events,
                                 menus[key].createdAt,
                                 menus[key].updatedAt,
                                 menus[key].deletedAt
@@ -53,6 +55,8 @@ export class MenusService {
                 return new Menu(
                     id,
                     menu.name,
+                    menu.dishes,
+                    menu.events,
                     menu.createdAt,
                     menu.updatedAt,
                     menu.deletedAt
@@ -60,7 +64,7 @@ export class MenusService {
             }));
     }
 
-    add(name: string) {
+    add(name: string, dishes: [], events: []) {
         let generatedId: number;
         let newMenu: Menu;
         return this.authService.userId
@@ -74,6 +78,8 @@ export class MenusService {
                     newMenu = new Menu(
                         Math.random(),
                         name,
+                        dishes,
+                        events,
                         new Date(),
                         null,
                         null
@@ -95,7 +101,7 @@ export class MenusService {
             );
     }
 
-    edit(id: number, name: string) {
+    edit(id: number, name: string, dishes: [], events: []) {
         let updatedMenus: Menu[];
         return this.menus.pipe(
             take(1),
@@ -114,6 +120,8 @@ export class MenusService {
                 updatedMenus[updatedMenuIndex] = new Menu(
                     oldMenu.id,
                     name,
+                    dishes,
+                    events,
                     oldMenu.createdAt,
                     new Date(),
                     oldMenu.deletedAt
