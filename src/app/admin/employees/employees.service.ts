@@ -154,7 +154,7 @@ export class EmployeesService {
             .pipe(
                 take(1),
                 switchMap(userId => {
-                    if (!userId) {
+                    if (!userId || userId === id) {
                         throw new Error('No user found!');
                     }
 

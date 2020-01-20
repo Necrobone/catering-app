@@ -7,6 +7,7 @@ import { AlertController, LoadingController, NavController } from '@ionic/angula
 import { Employee } from '../employee.model';
 import { Role } from '../../../auth/role.model';
 import { RolesService } from '../../../auth/roles.service';
+import { AuthService } from '../../../auth/auth.service';
 
 @Component({
     selector: 'app-edit',
@@ -17,12 +18,14 @@ export class EditPage implements OnInit, OnDestroy {
     form: FormGroup;
     roles: Role[];
     employee: Employee;
+    formLoaded = false;
     private roleSubscription: Subscription;
     private employeeSubscription: Subscription;
 
     constructor(
         private employeesService: EmployeesService,
         private rolesService: RolesService,
+        private authService: AuthService,
         private router: Router,
         private loadingController: LoadingController,
         private route: ActivatedRoute,
@@ -99,15 +102,10 @@ export class EditPage implements OnInit, OnDestroy {
         }).then(loadingEl => {
             loadingEl.present();
             this.rolesService.fetch().subscribe(() => {
+                this.formLoaded = true;
                 loadingEl.dismiss();
             });
         });
-    }
-
-    selectedRole = (role1: Role, role2: Role): boolean => {
-        console.log(role1);
-        console.log(role2);
-        return role1 && role2 ? role1.id === role2.id : role1 === role2;
     }
 
     onEdit() {
