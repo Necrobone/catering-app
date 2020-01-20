@@ -33,6 +33,8 @@ export class DishesService {
                                 dishes[key].name,
                                 dishes[key].description,
                                 dishes[key].image,
+                                dishes[key].suppliers,
+                                dishes[key].events,
                                 dishes[key].createdAt,
                                 dishes[key].updatedAt,
                                 dishes[key].deletedAt
@@ -57,6 +59,8 @@ export class DishesService {
                     dish.name,
                     dish.description,
                     dish.image,
+                    dish.suppliers,
+                    dish.events,
                     dish.createdAt,
                     dish.updatedAt,
                     dish.deletedAt
@@ -64,7 +68,7 @@ export class DishesService {
             }));
     }
 
-    add(name: string, description: string, image: string) {
+    add(name: string, description: string, image: string, suppliers: [], events: []) {
         let generatedId: number;
         let newDish: Dish;
         return this.authService.userId
@@ -80,6 +84,8 @@ export class DishesService {
                         name,
                         description,
                         image,
+                        suppliers,
+                        events,
                         new Date(),
                         null,
                         null
@@ -101,7 +107,7 @@ export class DishesService {
             );
     }
 
-    edit(id: number, name: string, description: string, image: string) {
+    edit(id: number, name: string, description: string, image: string, suppliers: [], events: []) {
         let updatedDishes: Dish[];
         return this.dishes.pipe(
             take(1),
@@ -122,6 +128,8 @@ export class DishesService {
                     name,
                     description,
                     image,
+                    suppliers,
+                    events,
                     oldDish.createdAt,
                     new Date(),
                     oldDish.deletedAt

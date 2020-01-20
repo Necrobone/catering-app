@@ -13,7 +13,7 @@
 </ion-header>
 
 <ion-content>
-    <form *ngIf="form" [formGroup]="form">
+    <form *ngIf="formLoaded" [formGroup]="form">
         <ion-grid>
             <ion-row>
                 <ion-col size-sm="6" offset-sm="3">
@@ -35,10 +35,26 @@
             <ion-row>
                 <ion-col size-sm="6" offset-sm="3">
                     <ion-item>
-                        <ion-label position="floating">Image</ion-label>
-                        <ion-input type="text" autocomplete autocorrect formControlName="image"
-                                   maxlength="255"></ion-input>
+                        <ion-label>Suppliers</ion-label>
+                        <ion-select multiple="true" placeholder="Select one or more" formControlName="suppliers">
+                            <ion-select-option *ngFor="let supplier of suppliers" [value]="supplier.id">{{ supplier.name }}</ion-select-option>
+                        </ion-select>
                     </ion-item>
+                </ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col size-sm="6" offset-sm="3">
+                    <ion-item>
+                        <ion-label>Events</ion-label>
+                        <ion-select multiple="true" placeholder="Select one or more" formControlName="events">
+                            <ion-select-option *ngFor="let event of events" [value]="event.id">{{ event.name }}</ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col size-sm="6" offset-sm="3">
+                    <app-image-picker [showPreview]="form.get('image').value" (imagePick)="onImagePicked($event)" [selectedImage]="dish.image"></app-image-picker>
                 </ion-col>
             </ion-row>
             <ion-row>

@@ -5,6 +5,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController, LoadingController, NavController } from '@ionic/angular';
 import { Dish } from '../dish.model';
 import { DishesService } from '../dishes.service';
+import { Supplier } from '../../suppliers/supplier.model';
+import { Event } from '../../events/event.model';
+import { SuppliersService } from '../../suppliers/suppliers.service';
+import { EventsService } from '../../events/events.service';
 
 @Component({
     selector: 'app-edit',
@@ -14,10 +18,17 @@ import { DishesService } from '../dishes.service';
 export class EditPage implements OnInit, OnDestroy {
     form: FormGroup;
     dish: Dish;
+    suppliers: Supplier[];
+    events: Event[];
+    formLoaded = false;
     private subscription: Subscription;
+    private supplierSubscription: Subscription;
+    private eventSubscription: Subscription;
 
     constructor(
         private dishesService: DishesService,
+        private suppliersService: SuppliersService,
+        private eventsService: EventsService,
         private router: Router,
         private loadingController: LoadingController,
         private route: ActivatedRoute,
@@ -33,6 +44,38 @@ export class EditPage implements OnInit, OnDestroy {
                 return;
             }
 
+            this.supplierSubscription = this.suppliersService.suppliers.subscribe(suppliers => {
+                this.suppliers = suppliers;
+            }, error => {
+                this.alertController.create({
+                    header: 'An error ocurred!',
+                    message: 'Suppliers could not be fetched. Please try again later.',
+                    buttons: [{
+                        text: 'Okay', handler: () => {
+                            this.router.navigate(['admin/dishes']);
+                        }
+                    }]
+                }).then(alertEl => {
+                    alertEl.present();
+                });
+            });
+
+            this.eventSubscription = this.eventsService.events.subscribe(events => {
+                this.events = events;
+            }, error => {
+                this.alertController.create({
+                    header: 'An error ocurred!',
+                    message: 'Events could not be fetched. Please try again later.',
+                    buttons: [{
+                        text: 'Okay', handler: () => {
+                            this.router.navigate(['admin/suppliers']);
+                        }
+                    }]
+                }).then(alertEl => {
+                    alertEl.present();
+                });
+            });
+
             this.subscription = this.dishesService.getDish(+paramMap.get('id')).subscribe(dish => {
                 this.dish = dish;
                 this.form = new FormGroup({
@@ -44,10 +87,15 @@ export class EditPage implements OnInit, OnDestroy {
                         updateOn: 'blur',
                         validators: [Validators.required, Validators.maxLength(65535)]
                     }),
-                    image: new FormControl(this.dish.image, {
+                    suppliers: new FormControl(this.dish.suppliersIds, {
                         updateOn: 'blur',
-                        validators: [Validators.required, Validators.maxLength(255)]
+                        validators: [Validators.required]
                     }),
+                    events: new FormControl(this.dish.eventsIds, {
+                        updateOn: 'blur',
+                        validators: [Validators.required]
+                    }),
+                    image: new FormControl(this.dish.image),
                 });
             }, error => {
                 this.alertController.create({
@@ -65,6 +113,24 @@ export class EditPage implements OnInit, OnDestroy {
         });
     }
 
+    ionViewWillEnter() {
+        this.loadingController.create({
+            message: 'Fetching...',
+        }).then(loadingEl => {
+            loadingEl.present();
+            this.suppliersService.fetch().subscribe(() => {
+                this.eventsService.fetch().subscribe(() => {
+                    this.formLoaded = true;
+                    loadingEl.dismiss();
+                });
+            });
+        });
+    }
+
+    onImagePicked(image: string) {
+        this.form.patchValue({image});
+    }
+
     onEdit() {
         if (!this.form.valid) {
             return;
@@ -79,6 +145,8 @@ export class EditPage implements OnInit, OnDestroy {
                 this.form.value.name,
                 this.form.value.description,
                 this.form.value.image,
+                this.form.value.suppliers,
+                this.form.value.events
             ).subscribe(() => {
                 loadingEl.dismiss();
                 this.form.reset();
@@ -117,6 +185,14 @@ export class EditPage implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         if (this.subscription) {
             this.subscription.unsubscribe();
+        }
+
+        if (this.supplierSubscription) {
+            this.supplierSubscription.unsubscribe();
+        }
+
+        if (this.eventSubscription) {
+            this.eventSubscription.unsubscribe();
         }
     }
 }
