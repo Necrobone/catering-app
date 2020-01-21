@@ -82,7 +82,7 @@ export class ServicesService {
                 }
             }),
             switchMap(services => {
-                const updatedServiceIndex = services.findIndex(hq => hq.id === id);
+                const updatedServiceIndex = services.findIndex(service => service.id === id);
                 updatedServices = [...services];
                 const oldService = updatedServices[updatedServiceIndex];
 
@@ -98,6 +98,7 @@ export class ServicesService {
                     oldService.createdAt,
                     new Date()
                 );
+
                 return this.http.put(
                     `http://api.test/api/services/${id}?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw`,
                     {...updatedServices[updatedServiceIndex], id: null}
@@ -120,6 +121,30 @@ export class ServicesService {
 
                     return this.http.delete(
                         `http://api.test/api/services/${id}?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw`
+                    );
+                }),
+                switchMap(() => {
+                    return this.services;
+                }),
+                take(1),
+                tap(services => {
+                    this._services.next(services.filter(service => service.id !== id));
+                })
+            );
+    }
+
+    toggle(id: number, approved: boolean) {
+        return this.authService.userId
+            .pipe(
+                take(1),
+                switchMap(userId => {
+                    if (!userId) {
+                        throw new Error('No user found!');
+                    }
+
+                    return this.http.put(
+                        `http://api.test/api/services/${id}/toggle?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw`,
+                        {approved}
                     );
                 }),
                 switchMap(() => {

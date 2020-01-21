@@ -5,7 +5,7 @@
         </ion-buttons>
         <ion-title>Edit Service</ion-title>
         <ion-buttons slot="primary">
-            <ion-button (click)="onEdit()" [disabled]="!form?.valid">
+            <ion-button (click)="onEdit()" [disabled]="!form?.valid" *ngIf="service && service.approved">
                 <ion-icon name="checkmark" slot="icon-only"></ion-icon>
             </ion-button>
         </ion-buttons>
@@ -13,14 +13,13 @@
 </ion-header>
 
 <ion-content>
-    <form *ngIf="form" [formGroup]="form">
+    <form *ngIf="formLoaded" [formGroup]="form">
         <ion-grid>
             <ion-row>
                 <ion-col size-sm="6" offset-sm="3">
                     <ion-item>
                         <ion-label position="floating">Address</ion-label>
-                        <ion-input type="text" autocomplete autocorrect formControlName="address"
-                                   maxlength="255"></ion-input>
+                        <ion-input type="text" autocomplete autocorrect formControlName="address" maxlength="255"></ion-input>
                     </ion-item>
                 </ion-col>
             </ion-row>
@@ -28,17 +27,31 @@
                 <ion-col size-sm="6" offset-sm="3">
                     <ion-item>
                         <ion-label position="floating">Zip</ion-label>
-                        <ion-input type="text" autocomplete autocorrect formControlName="zip"
-                                   maxlength="255"></ion-input>
+                        <ion-input type="text" autocomplete autocorrect formControlName="zip" maxlength="255"></ion-input>
                     </ion-item>
                 </ion-col>
             </ion-row>
             <ion-row>
                 <ion-col size-sm="6" offset-sm="3">
                     <ion-item>
-                        <ion-label position="floating">Start Date</ion-label>
-                        <ion-input type="text" autocomplete autocorrect formControlName="startDate"
-                                   maxlength="255"></ion-input>
+                        <ion-label position="floating">City</ion-label>
+                        <ion-input type="text" autocomplete autocorrect formControlName="city" maxlength="255"></ion-input>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col size-sm="6" offset-sm="3">
+                    <ion-item>
+                        <ion-label>Start Date</ion-label>
+                        <ion-datetime display-format="DD MMMM YYYY" picker-format="DD MMM YYYY" placeholder="Select Date" formControlName="startDate"></ion-datetime>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col size-sm="6" offset-sm="3">
+                    <ion-item>
+                        <ion-label>Start Time</ion-label>
+                        <ion-datetime display-format="h:mm A" picker-format="h:mm A" placeholder="Select Time" formControlName="startTime"></ion-datetime>
                     </ion-item>
                 </ion-col>
             </ion-row>
@@ -47,8 +60,7 @@
                     <ion-item>
                         <ion-label>Province</ion-label>
                         <ion-select placeholder="Select One" formControlName="province">
-                            <ion-select-option *ngFor="let province of provinces"
-                                               value="{{ province.id }}">{{ province.name }}</ion-select-option>
+                            <ion-select-option *ngFor="let province of provinces" [value]="province.id">{{ province.name }}</ion-select-option>
                         </ion-select>
                     </ion-item>
                 </ion-col>
@@ -58,23 +70,20 @@
                     <ion-item>
                         <ion-label>Event</ion-label>
                         <ion-select placeholder="Select One" formControlName="event">
-                            <ion-select-option *ngFor="let event of events"
-                                               value="{{ event.id }}">{{ event.name }}</ion-select-option>
+                            <ion-select-option *ngFor="let event of events" [value]="event.id">{{ event.name }}</ion-select-option>
                         </ion-select>
                     </ion-item>
                 </ion-col>
             </ion-row>
-            <ion-row>
-                <ion-col size-sm="6" offset-sm="3">
-                    <ion-button (click)="onReject()">
-                        <ion-icon name="trash" slot="icon-only"></ion-icon>
-                        Reject Service
+            <ion-row *ngIf="service.approved === null">
+                <ion-col size-sm="6">
+                    <ion-button (click)="onApprove()" color="success" expand="block">
+                        <ion-icon name="checkmark-circle"></ion-icon> Approve
                     </ion-button>
                 </ion-col>
-                <ion-col size-sm="6" offset-sm="3">
-                    <ion-button (click)="onApprove()" color="success">
-                        <ion-icon name="checkmark-circle"></ion-icon>
-                        Approve Service
+                <ion-col size-sm="6">
+                    <ion-button (click)="onReject()" color="danger" expand="block">
+                        <ion-icon name="close-circle" slot="icon-only"></ion-icon> Reject
                     </ion-button>
                 </ion-col>
             </ion-row>

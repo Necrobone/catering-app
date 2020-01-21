@@ -5,7 +5,6 @@ import { ServicesService } from '../services.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController, LoadingController, NavController } from '@ionic/angular';
 import { Service } from '../service.model';
-import { Role } from '../../../auth/role.model';
 import { Province } from '../../../province.model';
 import { Event } from '../../events/event.model';
 import { ProvincesService } from '../../../provinces.service';
@@ -21,6 +20,7 @@ export class EditPage implements OnInit, OnDestroy {
     provinces: Province[];
     events: Event[];
     service: Service;
+    formLoaded = false;
     private provinceSubscription: Subscription;
     private eventSubscription: Subscription;
     private serviceSubscription: Subscription;
@@ -77,27 +77,31 @@ export class EditPage implements OnInit, OnDestroy {
             this.serviceSubscription = this.servicesService.getService(+paramMap.get('id')).subscribe(service => {
                 this.service = service;
                 this.form = new FormGroup({
-                    address: new FormControl(this.service.address, {
+                    address: new FormControl({value: this.service.address, disabled: !service.approved}, {
                         updateOn: 'blur',
                         validators: [Validators.required, Validators.maxLength(255)]
                     }),
-                    zip: new FormControl(this.service.zip, {
+                    zip: new FormControl({value: this.service.zip, disabled: !service.approved}, {
                         updateOn: 'blur',
                         validators: [Validators.required, Validators.maxLength(255)]
                     }),
-                    city: new FormControl(this.service.city, {
+                    city: new FormControl({value: this.service.city, disabled: !service.approved}, {
                         updateOn: 'blur',
                         validators: [Validators.required, Validators.maxLength(255)]
                     }),
-                    startDate: new FormControl(this.service.startDate, {
+                    startDate: new FormControl({value: this.service.startDate, disabled: !service.approved}, {
                         updateOn: 'blur',
-                        validators: [Validators.required, Validators.maxLength(255)]
+                        validators: [Validators.required]
                     }),
-                    province: new FormControl(this.service.province, {
+                    startTime: new FormControl({value: this.service.startDate, disabled: !service.approved}, {
+                        updateOn: 'blur',
+                        validators: [Validators.required]
+                    }),
+                    province: new FormControl({value: this.service.provinceId, disabled: !service.approved}, {
                         updateOn: 'blur',
                         validators: [Validators.required, Validators.min(1)]
                     }),
-                    event: new FormControl(typeof this.service.event === 'number' ? this.service.event : this.service.event.id, {
+                    event: new FormControl({value: this.service.eventId, disabled: !service.approved}, {
                         updateOn: 'blur',
                         validators: [Validators.required, Validators.min(1)]
                     })
@@ -125,16 +129,11 @@ export class EditPage implements OnInit, OnDestroy {
             loadingEl.present();
             this.provincesService.fetch().subscribe(() => {
                 this.eventsService.fetch().subscribe(() => {
+                    this.formLoaded = true;
                     loadingEl.dismiss();
                 });
             });
         });
-    }
-
-    selectedRole = (province1: Role, province2: Role): boolean => {
-        console.log(province1);
-        console.log(province2);
-        return province1 && province2 ? province1.id === province2.id : province1 === province2;
     }
 
     onEdit() {
@@ -146,12 +145,16 @@ export class EditPage implements OnInit, OnDestroy {
             message: 'Updating service...'
         }).then(loadingEl => {
             loadingEl.present();
+            const startDate = new Date(this.form.value.startDate);
+            const startTime = new Date(this.form.value.startTime);
+            startDate.setHours(startTime.getHours(), startTime.getMinutes(), startTime.getSeconds());
+
             this.servicesService.edit(
                 this.service.id,
                 this.form.value.address,
                 this.form.value.zip,
                 this.form.value.city,
-                this.form.value.startDate,
+                startDate,
                 +this.form.value.province,
                 +this.form.value.event
             ).subscribe(() => {
@@ -189,6 +192,62 @@ export class EditPage implements OnInit, OnDestroy {
         });
     }
 
+    onApprove() {
+        this.alertController.create({
+            header: 'Approve Service',
+            message: 'Are you sure that you want to approve this service?',
+            buttons: [
+                {
+                    text: 'Cancel',
+                    role: 'cancel',
+                    cssClass: 'secondary',
+                },
+                {
+                    text: 'Okay',
+                    handler: () => {
+                        this.servicesService.toggle(
+                            this.service.id,
+                            true
+                        ).subscribe(() => {
+                            this.form.reset();
+                            this.router.navigate(['/admin/services']);
+                        });
+                    }
+                }
+            ]
+        }).then(loadingEl => {
+            loadingEl.present();
+        });
+    }
+
+    onReject() {
+        this.alertController.create({
+            header: 'Reject Service',
+            message: 'Are you sure that you want to reject this service?',
+            buttons: [
+                {
+                    text: 'Cancel',
+                    role: 'cancel',
+                    cssClass: 'secondary',
+                },
+                {
+                    text: 'Okay',
+                    handler: () => {
+                        this.servicesService.toggle(
+                            this.service.id,
+                            false
+                        ).subscribe(() => {
+                            this.form.reset();
+                            this.router.navigate(['/admin/services']);
+                        });
+                    }
+                }
+            ]
+        }).then(loadingEl => {
+            loadingEl.present();
+        });
+    }
+
     ngOnDestroy(): void {
         if (this.serviceSubscription) {
             this.serviceSubscription.unsubscribe();
@@ -196,6 +255,10 @@ export class EditPage implements OnInit, OnDestroy {
 
         if (this.provinceSubscription) {
             this.provinceSubscription.unsubscribe();
+        }
+
+        if (this.eventSubscription) {
+            this.eventSubscription.unsubscribe();
         }
     }
 }
