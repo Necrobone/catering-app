@@ -21,7 +21,7 @@ export class HeadquartersService {
     fetch() {
         return this.http
             .get<{ [key: string]: Headquarter }>(
-                'http://api.test/api/headquarters?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw'
+                'http://api.test/api/headquarters?api_token=' + this.authService.user.token
             )
             .pipe(
                 map(headquarters => {
@@ -52,7 +52,7 @@ export class HeadquartersService {
 
     getHeadquarter(id: number) {
         return this.http
-            .get<Headquarter>(`http://api.test/api/headquarters/${id}?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw`)
+            .get<Headquarter>(`http://api.test/api/headquarters/${id}?api_token=${this.authService.user.token}`)
             .pipe(map(headquarter => {
                 return new Headquarter(
                     id,
@@ -91,7 +91,7 @@ export class HeadquartersService {
                         null
                     );
                     return this.http.post<{ id: number }>(
-                        'http://api.test/api/headquarters?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw',
+                        'http://api.test/api/headquarters?api_token=' + this.authService.user.token,
                         {...newHeadquarter, id: null}
                     );
                 }),
@@ -135,7 +135,7 @@ export class HeadquartersService {
                     oldHeadquarter.deletedAt
                 );
                 return this.http.put(
-                    `http://api.test/api/headquarters/${id}?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw`,
+                    `http://api.test/api/headquarters/${id}?api_token=${this.authService.user.token}`,
                     {...updatedHeadquarters[updatedHeadquarterIndex], id: null}
                 );
             }),
@@ -155,7 +155,7 @@ export class HeadquartersService {
                     }
 
                     return this.http.delete(
-                        `http://api.test/api/headquarters/${id}?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw`
+                        `http://api.test/api/headquarters/${id}?api_token=${this.authService.user.token}`
                     );
                 }),
                 switchMap(() => {

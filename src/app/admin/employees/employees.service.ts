@@ -21,7 +21,7 @@ export class EmployeesService {
     fetch() {
         return this.http
             .get<{ [key: string]: Employee }>(
-                'http://api.test/api/employees?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw'
+                'http://api.test/api/employees?api_token=' + this.authService.user.token
             )
             .pipe(
                 map(employees => {
@@ -53,7 +53,7 @@ export class EmployeesService {
 
     getEmployee(id: number) {
         return this.http
-            .get<Employee>(`http://api.test/api/employees/${id}?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw`)
+            .get<Employee>(`http://api.test/api/employees/${id}?api_token=${this.authService.user.token}`)
             .pipe(map(employee => {
                 return new Employee(
                     id,
@@ -94,7 +94,7 @@ export class EmployeesService {
                         null
                     );
                     return this.http.post<{ id: number }>(
-                        'http://api.test/api/employees?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw',
+                        'http://api.test/api/employees?api_token=' + this.authService.user.token,
                         {...newEmployee, id: null}
                     );
                 }),
@@ -139,7 +139,7 @@ export class EmployeesService {
                     oldEmployee.deletedAt
                 );
                 return this.http.put(
-                    `http://api.test/api/employees/${id}?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw`,
+                    `http://api.test/api/employees/${id}?api_token=${this.authService.user.token}`,
                     {...updatedEmployees[updatedEmployeeIndex], id: null}
                 );
             }),
@@ -159,7 +159,7 @@ export class EmployeesService {
                     }
 
                     return this.http.delete(
-                        `http://api.test/api/employees/${id}?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw`
+                        `http://api.test/api/employees/${id}?api_token=${this.authService.user.token}`
                     );
                 }),
                 switchMap(() => {

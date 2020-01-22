@@ -21,7 +21,7 @@ export class DishesService {
     fetch() {
         return this.http
             .get<{ [key: string]: Dish }>(
-                'http://api.test/api/dishes?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw'
+                'http://api.test/api/dishes?api_token=' + this.authService.user.token
             )
             .pipe(
                 map(dishes => {
@@ -52,7 +52,7 @@ export class DishesService {
 
     getDish(id: number) {
         return this.http
-            .get<Dish>(`http://api.test/api/dishes/${id}?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw`)
+            .get<Dish>(`http://api.test/api/dishes/${id}?api_token=${this.authService.user.token}`)
             .pipe(map(dish => {
                 return new Dish(
                     id,
@@ -91,7 +91,7 @@ export class DishesService {
                         null
                     );
                     return this.http.post<{ id: number }>(
-                        'http://api.test/api/dishes?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw',
+                        'http://api.test/api/dishes?api_token=' + this.authService.user.token,
                         {...newDish, id: null}
                     );
                 }),
@@ -135,7 +135,7 @@ export class DishesService {
                     oldDish.deletedAt
                 );
                 return this.http.put(
-                    `http://api.test/api/dishes/${id}?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw`,
+                    `http://api.test/api/dishes/${id}?api_token=${this.authService.user.token}`,
                     {...updatedDishes[updatedDishIndex], id: null}
                 );
             }),
@@ -155,7 +155,7 @@ export class DishesService {
                     }
 
                     return this.http.delete(
-                        `http://api.test/api/dishes/${id}?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw`
+                        `http://api.test/api/dishes/${id}?api_token=${this.authService.user.token}`
                     );
                 }),
                 switchMap(() => {

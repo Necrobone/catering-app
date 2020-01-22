@@ -21,7 +21,7 @@ export class ServicesService {
     fetch() {
         return this.http
             .get<{ [key: string]: Service }>(
-                'http://api.test/api/services?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw'
+                'http://api.test/api/services?api_token=' + this.authService.user.token
             )
             .pipe(
                 map(services => {
@@ -53,7 +53,7 @@ export class ServicesService {
 
     getService(id: number) {
         return this.http
-            .get<Service>(`http://api.test/api/services/${id}?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw`)
+            .get<Service>(`http://api.test/api/services/${id}?api_token=${this.authService.user.token}`)
             .pipe(map(service => {
                 return new Service(
                     id,
@@ -100,7 +100,7 @@ export class ServicesService {
                 );
 
                 return this.http.put(
-                    `http://api.test/api/services/${id}?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw`,
+                    `http://api.test/api/services/${id}?api_token=${this.authService.user.token}`,
                     {...updatedServices[updatedServiceIndex], id: null}
                 );
             }),
@@ -120,7 +120,7 @@ export class ServicesService {
                     }
 
                     return this.http.delete(
-                        `http://api.test/api/services/${id}?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw`
+                        `http://api.test/api/services/${id}?api_token=${this.authService.user.token}`
                     );
                 }),
                 switchMap(() => {
@@ -143,7 +143,7 @@ export class ServicesService {
                     }
 
                     return this.http.put(
-                        `http://api.test/api/services/${id}/toggle?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw`,
+                        `http://api.test/api/services/${id}/toggle?api_token=${this.authService.user.token}`,
                         {approved}
                     );
                 }),

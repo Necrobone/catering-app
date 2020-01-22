@@ -21,7 +21,7 @@ export class SuppliersService {
     fetch() {
         return this.http
             .get<{ [key: string]: Supplier }>(
-                'http://api.test/api/suppliers?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw'
+                'http://api.test/api/suppliers?api_token=' + this.authService.user.token
             )
             .pipe(
                 map(suppliers => {
@@ -49,7 +49,7 @@ export class SuppliersService {
 
     getSupplier(id: number) {
         return this.http
-            .get<Supplier>(`http://api.test/api/suppliers/${id}?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw`)
+            .get<Supplier>(`http://api.test/api/suppliers/${id}?api_token=${this.authService.user.token}`)
             .pipe(map(supplier => {
                 return new Supplier(
                     id,
@@ -82,7 +82,7 @@ export class SuppliersService {
                         null
                     );
                     return this.http.post<{ id: number }>(
-                        'http://api.test/api/suppliers?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw',
+                        'http://api.test/api/suppliers?api_token=' + this.authService.user.token,
                         {...newSupplier, id: null}
                     );
                 }),
@@ -123,7 +123,7 @@ export class SuppliersService {
                     oldSupplier.deletedAt
                 );
                 return this.http.put(
-                    `http://api.test/api/suppliers/${id}?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw`,
+                    `http://api.test/api/suppliers/${id}?api_token=${this.authService.user.token}`,
                     {...updatedSuppliers[updatedSupplierIndex], id: null}
                 );
             }),
@@ -143,7 +143,7 @@ export class SuppliersService {
                     }
 
                     return this.http.delete(
-                        `http://api.test/api/suppliers/${id}?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw`
+                        `http://api.test/api/suppliers/${id}?api_token=${this.authService.user.token}`
                     );
                 }),
                 switchMap(() => {

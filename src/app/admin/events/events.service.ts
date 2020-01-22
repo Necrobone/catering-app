@@ -21,7 +21,7 @@ export class EventsService {
     fetch() {
         return this.http
             .get<{ [key: string]: Event }>(
-                'http://api.test/api/events?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw'
+                'http://api.test/api/events?api_token=' + this.authService.user.token
             )
             .pipe(
                 map(events => {
@@ -48,7 +48,7 @@ export class EventsService {
 
     getEvent(id: number) {
         return this.http
-            .get<Event>(`http://api.test/api/events/${id}?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw`)
+            .get<Event>(`http://api.test/api/events/${id}?api_token=${this.authService.user.token}`)
             .pipe(map(event => {
                 return new Event(
                     id,
@@ -79,7 +79,7 @@ export class EventsService {
                         null
                     );
                     return this.http.post<{ id: number }>(
-                        'http://api.test/api/events?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw',
+                        'http://api.test/api/events?api_token=' + this.authService.user.token,
                         {...newEvent, id: null}
                     );
                 }),
@@ -119,7 +119,7 @@ export class EventsService {
                     oldEvent.deletedAt
                 );
                 return this.http.put(
-                    `http://api.test/api/events/${id}?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw`,
+                    `http://api.test/api/events/${id}?api_token=${this.authService.user.token}`,
                     {...updatedEvents[updatedEventIndex], id: null}
                 );
             }),
@@ -139,7 +139,7 @@ export class EventsService {
                     }
 
                     return this.http.delete(
-                        `http://api.test/api/events/${id}?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw`
+                        `http://api.test/api/events/${id}?api_token=${this.authService.user.token}`
                     );
                 }),
                 switchMap(() => {

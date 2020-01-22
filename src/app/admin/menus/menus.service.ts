@@ -21,7 +21,7 @@ export class MenusService {
     fetch() {
         return this.http
             .get<{ [key: string]: Menu }>(
-                'http://api.test/api/menus?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw'
+                'http://api.test/api/menus?api_token=' + this.authService.user.token
             )
             .pipe(
                 map(menus => {
@@ -50,7 +50,7 @@ export class MenusService {
 
     getMenu(id: number) {
         return this.http
-            .get<Menu>(`http://api.test/api/menus/${id}?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw`)
+            .get<Menu>(`http://api.test/api/menus/${id}?api_token=${this.authService.user.token}`)
             .pipe(map(menu => {
                 return new Menu(
                     id,
@@ -85,7 +85,7 @@ export class MenusService {
                         null
                     );
                     return this.http.post<{ id: number }>(
-                        'http://api.test/api/menus?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw',
+                        'http://api.test/api/menus?api_token=' + this.authService.user.token,
                         {...newMenu, id: null}
                     );
                 }),
@@ -127,7 +127,7 @@ export class MenusService {
                     oldMenu.deletedAt
                 );
                 return this.http.put(
-                    `http://api.test/api/menus/${id}?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw`,
+                    `http://api.test/api/menus/${id}?api_token=${this.authService.user.token}`,
                     {...updatedMenus[updatedMenuIndex], id: null}
                 );
             }),
@@ -147,7 +147,7 @@ export class MenusService {
                     }
 
                     return this.http.delete(
-                        `http://api.test/api/menus/${id}?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw`
+                        `http://api.test/api/menus/${id}?api_token=${this.authService.user.token}`
                     );
                 }),
                 switchMap(() => {

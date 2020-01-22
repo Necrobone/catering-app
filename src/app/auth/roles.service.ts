@@ -20,7 +20,7 @@ export class RolesService {
 
     fetch() {
         return this.http
-            .get<{ [key: number]: Role }>('http://api.test/api/roles?api_token=e7A2uYBS89H4r0MoAi51YRkkfMC0O399YbA3Qhoc3oz9YtR6xw')
+            .get<{ [key: number]: Role }>('http://api.test/api/roles?api_token=' + this.authService.user.token)
             .pipe(
                 map(roles => {
                     const result = [];
