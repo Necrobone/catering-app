@@ -156,7 +156,9 @@ export class EditPage implements OnInit, OnDestroy {
                 this.form.value.city,
                 startDate,
                 +this.form.value.province,
-                +this.form.value.event
+                +this.form.value.event,
+                this.service.dishes,
+                this.service.users
             ).subscribe(() => {
                 loadingEl.dismiss();
                 this.form.reset();

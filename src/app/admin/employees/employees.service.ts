@@ -35,10 +35,7 @@ export class EmployeesService {
                                 employees[key].email,
                                 employees[key].password,
                                 employees[key].apiToken,
-                                employees[key].role,
-                                employees[key].createdAt,
-                                employees[key].updatedAt,
-                                employees[key].deletedAt
+                                employees[key].role
                             ));
                         }
                     }
@@ -62,10 +59,7 @@ export class EmployeesService {
                     employee.email,
                     employee.password,
                     employee.apiToken,
-                    employee.role,
-                    employee.createdAt,
-                    employee.updatedAt,
-                    employee.deletedAt
+                    employee.role
                 );
             }));
     }
@@ -88,10 +82,7 @@ export class EmployeesService {
                         email,
                         password,
                         null,
-                        role,
-                        new Date(),
-                        null,
-                        null
+                        role
                     );
                     return this.http.post<{ id: number }>(
                         'http://api.test/api/employees?api_token=' + this.authService.user.token,
@@ -133,10 +124,7 @@ export class EmployeesService {
                     email,
                     password,
                     null,
-                    role,
-                    oldEmployee.createdAt,
-                    new Date(),
-                    oldEmployee.deletedAt
+                    role
                 );
                 return this.http.put(
                     `http://api.test/api/employees/${id}?api_token=${this.authService.user.token}`,

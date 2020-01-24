@@ -6,10 +6,7 @@ export class Menu {
         public id: number,
         public name: string,
         public dishes: Dish[],
-        public events: Event[],
-        public createdAt: Date,
-        public updatedAt: Date|null,
-        public deletedAt: Date|null
+        public events: Event[]
     ) {}
 
     get dishesIds() {

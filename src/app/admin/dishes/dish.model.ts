@@ -8,10 +8,7 @@ export class Dish {
         public description: string,
         public image: string,
         public suppliers: Supplier[],
-        public events: Event[],
-        public createdAt: Date,
-        public updatedAt: Date|null,
-        public deletedAt: Date|null
+        public events: Event[]
     ) {}
 
     get suppliersIds() {

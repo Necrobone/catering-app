@@ -34,10 +34,7 @@ export class DishesService {
                                 dishes[key].description,
                                 dishes[key].image,
                                 dishes[key].suppliers,
-                                dishes[key].events,
-                                dishes[key].createdAt,
-                                dishes[key].updatedAt,
-                                dishes[key].deletedAt
+                                dishes[key].events
                             ));
                         }
                     }
@@ -60,10 +57,7 @@ export class DishesService {
                     dish.description,
                     dish.image,
                     dish.suppliers,
-                    dish.events,
-                    dish.createdAt,
-                    dish.updatedAt,
-                    dish.deletedAt
+                    dish.events
                 );
             }));
     }
@@ -85,10 +79,7 @@ export class DishesService {
                         description,
                         image,
                         suppliers,
-                        events,
-                        new Date(),
-                        null,
-                        null
+                        events
                     );
                     return this.http.post<{ id: number }>(
                         'http://api.test/api/dishes?api_token=' + this.authService.user.token,
@@ -129,10 +120,7 @@ export class DishesService {
                     description,
                     image,
                     suppliers,
-                    events,
-                    oldDish.createdAt,
-                    new Date(),
-                    oldDish.deletedAt
+                    events
                 );
                 return this.http.put(
                     `http://api.test/api/dishes/${id}?api_token=${this.authService.user.token}`,

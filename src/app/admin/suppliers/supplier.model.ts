@@ -4,10 +4,7 @@ export class Supplier {
     constructor(
         public id: number,
         public name: string,
-        public headquarters: Headquarter[],
-        public createdAt: Date,
-        public updatedAt: Date|null,
-        public deletedAt: Date|null
+        public headquarters: Headquarter[]
     ) {}
 
     get headquartersIds() {

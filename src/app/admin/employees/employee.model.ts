@@ -8,10 +8,7 @@ export class Employee {
         public email: string,
         public password: string|null,
         private _apiToken: string|null,
-        public role: Role|number,
-        public createdAt: Date,
-        public updatedAt: Date|null,
-        public deletedAt: Date|null
+        public role: Role|number
     ) {}
 
     get apiToken() {

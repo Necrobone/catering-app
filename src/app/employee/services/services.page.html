@@ -21,6 +21,10 @@
                 <h3>{{ service.province.name }}</h3>
                 <p>{{ service.startDate }}</p>
             </ion-label>
+
+            <ion-badge *ngIf="1 === service.approved" color="success">Approved</ion-badge>
+            <ion-badge *ngIf="0 === service.approved" color="danger">Rejected</ion-badge>
+            <ion-badge *ngIf="null === service.approved" color="warning">Pending</ion-badge>
         </ion-item>
     </ion-list>
 

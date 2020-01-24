@@ -4,6 +4,8 @@ import { map, switchMap, take, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Service } from './service.model';
 import { AuthService } from '../../auth/auth.service';
+import { Dish } from '../dishes/dish.model';
+import { User } from '../../auth/user.model';
 
 @Injectable({
     providedIn: 'root'
@@ -37,8 +39,8 @@ export class ServicesService {
                                 services[key].approved,
                                 services[key].province,
                                 services[key].event,
-                                services[key].createdAt,
-                                services[key].updatedAt
+                                services[key].dishes,
+                                services[key].users
                             ));
                         }
                     }
@@ -64,13 +66,23 @@ export class ServicesService {
                     service.approved,
                     service.province,
                     service.event,
-                    service.createdAt,
-                    service.updatedAt
+                    service.dishes,
+                    service.users,
                 );
             }));
     }
 
-    edit(id: number, address: string, zip: string, city: string, startDate: Date, province: number, event: number) {
+    edit(
+        id: number,
+        address: string,
+        zip: string,
+        city: string,
+        startDate: Date,
+        province: number,
+        event: number,
+        dishes: Dish[],
+        users: User[]
+    ) {
         let updatedServices: Service[];
         return this.services.pipe(
             take(1),
@@ -95,8 +107,8 @@ export class ServicesService {
                     oldService.approved,
                     province,
                     event,
-                    oldService.createdAt,
-                    new Date()
+                    dishes,
+                    users
                 );
 
                 return this.http.put(

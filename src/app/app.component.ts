@@ -12,7 +12,7 @@ import { Capacitor, Plugins } from '@capacitor/core';
     styleUrls: ['app.component.scss']
 })
 export class AppComponent implements OnInit, OnDestroy {
-    private authSub: Subscription;
+    private subscription: Subscription;
     private previousAuthState = false;
 
     constructor(
@@ -36,7 +36,7 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.authSub = this.authService.userIsAuthenticated.subscribe(isAuth => {
+        this.subscription = this.authService.userIsAuthenticated.subscribe(isAuth => {
             if (!isAuth && this.previousAuthState !== isAuth) {
                 this.router.navigateByUrl('/auth');
             }
@@ -46,8 +46,8 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        if (this.authSub) {
-            this.authSub.unsubscribe();
+        if (this.subscription) {
+            this.subscription.unsubscribe();
         }
     }
 }

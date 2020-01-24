@@ -34,10 +34,7 @@ export class HeadquartersService {
                                 headquarters[key].address,
                                 headquarters[key].zip,
                                 headquarters[key].city,
-                                headquarters[key].province,
-                                headquarters[key].createdAt,
-                                headquarters[key].updatedAt,
-                                headquarters[key].deletedAt
+                                headquarters[key].province
                             ));
                         }
                     }
@@ -60,10 +57,7 @@ export class HeadquartersService {
                     headquarter.address,
                     headquarter.zip,
                     headquarter.city,
-                    headquarter.province,
-                    headquarter.createdAt,
-                    headquarter.updatedAt,
-                    headquarter.deletedAt
+                    headquarter.province
                 );
             }));
     }
@@ -85,10 +79,7 @@ export class HeadquartersService {
                         address,
                         zip,
                         city,
-                        province,
-                        new Date(),
-                        null,
-                        null
+                        province
                     );
                     return this.http.post<{ id: number }>(
                         'http://api.test/api/headquarters?api_token=' + this.authService.user.token,
@@ -129,10 +120,7 @@ export class HeadquartersService {
                     address,
                     zip,
                     city,
-                    province,
-                    oldHeadquarter.createdAt,
-                    new Date(),
-                    oldHeadquarter.deletedAt
+                    province
                 );
                 return this.http.put(
                     `http://api.test/api/headquarters/${id}?api_token=${this.authService.user.token}`,

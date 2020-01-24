@@ -1,0 +1,51 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-back-button defaultHref="/employee/services"></ion-back-button>
+        </ion-buttons>
+        <ion-title>Edit Service</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="service">
+    <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+        <ion-refresher-content></ion-refresher-content>
+    </ion-refresher>
+
+    <ion-segment (ionChange)="onSegmentChange($event)">
+        <ion-segment-button value="where" checked>Where</ion-segment-button>
+        <ion-segment-button value="who">Who</ion-segment-button>
+        <ion-segment-button value="what">What</ion-segment-button>
+    </ion-segment>
+
+    <ion-list *ngIf="selectedSegment === 'where'">
+        <ion-item>
+            <ion-label>
+                where
+            </ion-label>
+        </ion-item>
+    </ion-list>
+
+    <ion-list *ngIf="selectedSegment === 'who'">
+        <ion-item>
+            <ion-label>
+                who
+            </ion-label>
+        </ion-item>
+    </ion-list>
+
+    <ion-list *ngIf="selectedSegment === 'what'">
+        <ion-item>
+            <ion-label>
+                what
+            </ion-label>
+        </ion-item>
+    </ion-list>
+
+    <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event)">
+        <ion-infinite-scroll-content
+                loadingSpinner="bubbles"
+                loadingText="Loading more data...">
+        </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+</ion-content>

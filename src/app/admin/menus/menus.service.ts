@@ -32,10 +32,7 @@ export class MenusService {
                                 +menus[key].id,
                                 menus[key].name,
                                 menus[key].dishes,
-                                menus[key].events,
-                                menus[key].createdAt,
-                                menus[key].updatedAt,
-                                menus[key].deletedAt
+                                menus[key].events
                             ));
                         }
                     }
@@ -56,10 +53,7 @@ export class MenusService {
                     id,
                     menu.name,
                     menu.dishes,
-                    menu.events,
-                    menu.createdAt,
-                    menu.updatedAt,
-                    menu.deletedAt
+                    menu.events
                 );
             }));
     }
@@ -79,10 +73,7 @@ export class MenusService {
                         Math.random(),
                         name,
                         dishes,
-                        events,
-                        new Date(),
-                        null,
-                        null
+                        events
                     );
                     return this.http.post<{ id: number }>(
                         'http://api.test/api/menus?api_token=' + this.authService.user.token,
@@ -121,10 +112,7 @@ export class MenusService {
                     oldMenu.id,
                     name,
                     dishes,
-                    events,
-                    oldMenu.createdAt,
-                    new Date(),
-                    oldMenu.deletedAt
+                    events
                 );
                 return this.http.put(
                     `http://api.test/api/menus/${id}?api_token=${this.authService.user.token}`,

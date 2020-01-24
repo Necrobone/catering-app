@@ -21,7 +21,7 @@ export class ServicesService {
     fetch() {
         return this.http
             .get<{ [key: string]: Service }>(
-                'http://api.test/api/services?api_token=' + this.authService.user.token
+                `http://api.test/api/employees/${this.authService.user.id}/services?api_token=${this.authService.user.token}`
             )
             .pipe(
                 map(services => {
@@ -37,8 +37,8 @@ export class ServicesService {
                                 services[key].approved,
                                 services[key].province,
                                 services[key].event,
-                                services[key].createdAt,
-                                services[key].updatedAt
+                                services[key].dishes,
+                                services[key].users
                             ));
                         }
                     }
@@ -60,12 +60,12 @@ export class ServicesService {
                     service.address,
                     service.zip,
                     service.city,
-                    service.startDate,
+                    new Date(service.startDate),
                     service.approved,
                     service.province,
                     service.event,
-                    service.createdAt,
-                    service.updatedAt
+                    service.dishes,
+                    service.users
                 );
             }));
     }

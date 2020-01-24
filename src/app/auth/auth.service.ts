@@ -1,9 +1,9 @@
-import {Injectable, OnDestroy} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {BehaviorSubject, from} from 'rxjs';
-import {User} from './user.model';
-import {map, tap} from 'rxjs/operators';
-import {Plugins} from '@capacitor/core';
+import { Injectable, OnDestroy } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, from } from 'rxjs';
+import { User } from './user.model';
+import { map, tap } from 'rxjs/operators';
+import { Plugins } from '@capacitor/core';
 
 export interface AuthResponseData {
     id: number;
@@ -14,9 +14,9 @@ export interface AuthResponseData {
     role_id: number;
 }
 
-const ADMINISTRATOR = 1;
-const EMPLOYEE = 2;
-const USER = 3;
+export const ADMINISTRATOR = 1;
+export const EMPLOYEE = 2;
+export const USER = 3;
 
 @Injectable({
     providedIn: 'root'
@@ -40,6 +40,7 @@ export class AuthService implements OnDestroy {
         const data = JSON.stringify({userId, token, tokenExpirationDate, email, firstName, lastName, roleId});
         Plugins.Storage.set({key: 'authData', value: data});
     }
+
     get token() {
         return this._user.asObservable().pipe(
             map(user => {

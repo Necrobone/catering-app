@@ -1,5 +1,7 @@
 import { Province } from '../../province.model';
 import { Event } from '../events/event.model';
+import { Dish } from '../dishes/dish.model';
+import { User } from '../../auth/user.model';
 
 export class Service {
     constructor(
@@ -11,8 +13,8 @@ export class Service {
         public approved: number|null,
         public province: Province|number,
         public event: Event|number,
-        public createdAt: Date,
-        public updatedAt: Date|null
+        public dishes: Dish[],
+        public users: User[]
     ) {}
 
     get provinceId() {

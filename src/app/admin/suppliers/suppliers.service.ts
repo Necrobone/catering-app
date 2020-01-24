@@ -31,10 +31,7 @@ export class SuppliersService {
                             places.push(new Supplier(
                                 +suppliers[key].id,
                                 suppliers[key].name,
-                                suppliers[key].headquarters,
-                                suppliers[key].createdAt,
-                                suppliers[key].updatedAt,
-                                suppliers[key].deletedAt
+                                suppliers[key].headquarters
                             ));
                         }
                     }
@@ -54,10 +51,7 @@ export class SuppliersService {
                 return new Supplier(
                     id,
                     supplier.name,
-                    supplier.headquarters,
-                    supplier.createdAt,
-                    supplier.updatedAt,
-                    supplier.deletedAt
+                    supplier.headquarters
                 );
             }));
     }
@@ -76,10 +70,7 @@ export class SuppliersService {
                     newSupplier = new Supplier(
                         Math.random(),
                         name,
-                        headquarters,
-                        new Date(),
-                        null,
-                        null
+                        headquarters
                     );
                     return this.http.post<{ id: number }>(
                         'http://api.test/api/suppliers?api_token=' + this.authService.user.token,
@@ -117,10 +108,7 @@ export class SuppliersService {
                 updatedSuppliers[updatedSupplierIndex] = new Supplier(
                     oldSupplier.id,
                     name,
-                    headquarters,
-                    oldSupplier.createdAt,
-                    new Date(),
-                    oldSupplier.deletedAt
+                    headquarters
                 );
                 return this.http.put(
                     `http://api.test/api/suppliers/${id}?api_token=${this.authService.user.token}`,

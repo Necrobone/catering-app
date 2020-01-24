@@ -30,10 +30,7 @@ export class EventsService {
                         if (events.hasOwnProperty(key)) {
                             ms.push(new Event(
                                 +events[key].id,
-                                events[key].name,
-                                events[key].createdAt,
-                                events[key].updatedAt,
-                                events[key].deletedAt
+                                events[key].name
                             ));
                         }
                     }
@@ -52,10 +49,7 @@ export class EventsService {
             .pipe(map(event => {
                 return new Event(
                     id,
-                    event.name,
-                    event.createdAt,
-                    event.updatedAt,
-                    event.deletedAt
+                    event.name
                 );
             }));
     }
@@ -73,10 +67,7 @@ export class EventsService {
 
                     newEvent = new Event(
                         Math.random(),
-                        name,
-                        new Date(),
-                        null,
-                        null
+                        name
                     );
                     return this.http.post<{ id: number }>(
                         'http://api.test/api/events?api_token=' + this.authService.user.token,
@@ -113,10 +104,7 @@ export class EventsService {
 
                 updatedEvents[updatedEventIndex] = new Event(
                     oldEvent.id,
-                    name,
-                    oldEvent.createdAt,
-                    new Date(),
-                    oldEvent.deletedAt
+                    name
                 );
                 return this.http.put(
                     `http://api.test/api/events/${id}?api_token=${this.authService.user.token}`,
