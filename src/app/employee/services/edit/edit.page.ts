@@ -8,6 +8,7 @@ import { Service } from '../../../admin/services/service.model';
 import { User } from '../../../auth/user.model';
 import { EMPLOYEE, USER } from '../../../auth/auth.service';
 import { SegmentChangeEventDetail } from '@ionic/core';
+import { Dish } from "../../../admin/dishes/dish.model";
 
 @Component({
     selector: 'app-edit',

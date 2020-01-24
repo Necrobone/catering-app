@@ -19,6 +19,8 @@
     </ion-segment>
 
     <ion-list *ngIf="selectedSegment === 'where'">
+        <ion-list-header color="tertiary"><h1>Location</h1></ion-list-header>
+
         <ion-item lines="none">
             <ion-label>Address</ion-label>
             <ion-label>{{ service.address }}</ion-label>
@@ -41,17 +43,48 @@
         </ion-item>
     </ion-list>
 
-    <ion-list *ngIf="selectedSegment === 'who'">
+    <ion-list *ngIf="selectedSegment === 'where'">
+        <ion-list-header color="tertiary"><h1>Map</h1></ion-list-header>
+
         <ion-item>
-            <ion-label>Client</ion-label>
-            <ion-label>{{ client.firstName }} {{ client.lastName }}</ion-label>
+            <ion-label>
+                MAPA
+            </ion-label>
+        </ion-item>
+    </ion-list>
+
+    <ion-list *ngIf="selectedSegment === 'who'">
+        <ion-list-header color="tertiary"><h1>Client</h1></ion-list-header>
+
+        <ion-item>
+            <ion-label>
+                <h2>{{ client.firstName }} {{ client.lastName }}</h2>
+                <p>{{ client.email }}</p>
+            </ion-label>
+        </ion-item>
+    </ion-list>
+
+    <ion-list *ngIf="selectedSegment === 'who'">
+        <ion-list-header color="tertiary"><h1>Employees</h1></ion-list-header>
+
+        <ion-item *ngFor="let employee of employees">
+            <ion-label>
+                <h2>{{ employee.firstName }} {{ employee.lastName }}</h2>
+                <p>{{ employee.email }}</p>
+            </ion-label>
         </ion-item>
     </ion-list>
 
     <ion-list *ngIf="selectedSegment === 'what'">
-        <ion-item>
+        <ion-list-header color="tertiary"><h1>{{ service.event.name }}</h1></ion-list-header>
+
+        <ion-item *ngFor="let dish of service.dishes">
+            <ion-avatar slot="start">
+                <img src="{{ dish.image }}" alt="{{ dish.name }} image">
+            </ion-avatar>
             <ion-label>
-                what
+                <h2>{{ dish.name }}</h2>
+                <p>{{ dish.description }}</p>
             </ion-label>
         </ion-item>
     </ion-list>
