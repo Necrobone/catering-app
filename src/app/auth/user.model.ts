@@ -1,11 +1,15 @@
+import { Role } from './role.model';
+import { Service } from '../admin/services/service.model';
+
 export class User {
     constructor(
         public id: number,
         public firstName: string,
         public lastName: string,
         public email: string,
-        private _token: string,
-        public roleId: number,
+        public apiToken: string,
+        public role: Role,
+        public services: Service[],
         private tokenExpirationDate: Date,
     ) {}
 
@@ -14,7 +18,7 @@ export class User {
             return null;
         }
 
-        return this._token;
+        return this.apiToken;
     }
 
     get tokenDuration() {

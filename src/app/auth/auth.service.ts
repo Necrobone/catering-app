@@ -4,15 +4,8 @@ import { BehaviorSubject, from } from 'rxjs';
 import { User } from './user.model';
 import { map, tap } from 'rxjs/operators';
 import { Plugins } from '@capacitor/core';
-
-export interface AuthResponseData {
-    id: number;
-    first_name: string;
-    last_name: string;
-    email: string;
-    api_token: string;
-    role_id: number;
-}
+import { Role } from './role.model';
+import { Service } from '../admin/services/service.model';
 
 export const ADMINISTRATOR = 1;
 export const EMPLOYEE = 2;
@@ -35,9 +28,10 @@ export class AuthService implements OnDestroy {
         email: string,
         firstName: string,
         lastName: string,
-        roleId: number
+        role: Role,
+        services: Service[]
     ) {
-        const data = JSON.stringify({userId, token, tokenExpirationDate, email, firstName, lastName, roleId});
+        const data = JSON.stringify({userId, token, tokenExpirationDate, email, firstName, lastName, role, services});
         Plugins.Storage.set({key: 'authData', value: data});
     }
 
@@ -85,7 +79,7 @@ export class AuthService implements OnDestroy {
         return this._user.asObservable().pipe(
             map(user => {
                 if (user) {
-                    return user.roleId === ADMINISTRATOR;
+                    return user.role.id === ADMINISTRATOR;
                 } else {
                     return false;
                 }
@@ -97,7 +91,7 @@ export class AuthService implements OnDestroy {
         return this._user.asObservable().pipe(
             map(user => {
                 if (user) {
-                    return user.roleId === EMPLOYEE;
+                    return user.role.id === EMPLOYEE;
                 } else {
                     return false;
                 }
@@ -109,7 +103,7 @@ export class AuthService implements OnDestroy {
         return this._user.asObservable().pipe(
             map(user => {
                 if (user) {
-                    return user.roleId === USER;
+                    return user.role.id === USER;
                 } else {
                     return false;
                 }
@@ -131,7 +125,8 @@ export class AuthService implements OnDestroy {
                     email: string,
                     firstName: string,
                     lastName: string,
-                    roleId: number
+                    role: Role,
+                    services: Service[],
                 };
                 const expirationTime = new Date(parsedData.tokenExpirationDate);
                 if (expirationTime <= new Date()) {
@@ -144,7 +139,8 @@ export class AuthService implements OnDestroy {
                     parsedData.lastName,
                     parsedData.email,
                     parsedData.token,
-                    parsedData.roleId,
+                    parsedData.role,
+                    parsedData.services,
                     expirationTime
                 );
             }),
@@ -161,18 +157,17 @@ export class AuthService implements OnDestroy {
     }
 
     signup(email: string, password: string) {
-        return this.http.post<AuthResponseData>(
+        return this.http.post<User>(
             `http://api.test/api/signup`,
             {
                 email,
-                password,
-                returnSecureToken: true
+                password
             }
         ).pipe(tap(this.setUserData.bind(this)));
     }
 
     login(email: string, password: string) {
-        return this.http.post<AuthResponseData>(
+        return this.http.post<User>(
             `http://api.test/api/login`,
             {
                 email,
@@ -200,28 +195,30 @@ export class AuthService implements OnDestroy {
         }, duration);
     }
 
-    private setUserData(userData: AuthResponseData) {
+    private setUserData(userData: User) {
         const expirationTime = new Date();
-        expirationTime.setHours(expirationTime.getHours() + 1);
+        expirationTime.setHours(expirationTime.getHours() + 2);
         const user = new User(
             userData.id,
-            userData.first_name,
-            userData.last_name,
+            userData.firstName,
+            userData.lastName,
             userData.email,
-            userData.api_token,
-            userData.role_id,
+            userData.apiToken,
+            userData.role,
+            userData.services,
             expirationTime
         );
         this._user.next(user);
         this.autoLogout(user.tokenDuration);
         AuthService.storeAuthData(
             userData.id,
-            userData.api_token,
+            userData.apiToken,
             expirationTime.toISOString(),
             userData.email,
-            userData.first_name,
-            userData.last_name,
-            userData.role_id
+            userData.firstName,
+            userData.lastName,
+            userData.role,
+            userData.services,
         );
     }
 
@@ -231,8 +228,8 @@ export class AuthService implements OnDestroy {
         }
     }
 
-    getUrlByRole(roleId: number) {
-        switch (roleId) {
+    getUrlByRole(id: number) {
+        switch (id) {
             case ADMINISTRATOR:
                 return '/admin';
             case EMPLOYEE:

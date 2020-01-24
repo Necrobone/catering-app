@@ -7,7 +7,7 @@
         </ion-header>
 
         <ion-content>
-            <ion-list *ngIf="user && user.roleId === administrator">
+            <ion-list *ngIf="user && user.role.id === administrator">
                 <ion-menu-toggle menu="sideMenu">
                     <ion-item lines="none" routerLink="/admin/headquarters">
                         <ion-icon name="business" slot="start"></ion-icon>
@@ -64,7 +64,7 @@
                     </ion-item>
                 </ion-menu-toggle>
             </ion-list>
-            <ion-list *ngIf="user && user.roleId === employee">
+            <ion-list *ngIf="user && user.role.id === employee">
                 <ion-menu-toggle menu="sideMenu">
                     <ion-item lines="none" routerLink="/employee/services">
                         <ion-icon name="today" slot="start"></ion-icon>

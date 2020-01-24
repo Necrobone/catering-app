@@ -1,9 +1,10 @@
-import {Component, OnInit} from '@angular/core';
-import {NgForm} from '@angular/forms';
-import {AuthResponseData, AuthService} from './auth.service';
-import {Router} from '@angular/router';
-import {AlertController, LoadingController} from '@ionic/angular';
-import {Observable} from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { AuthService } from './auth.service';
+import { Router } from '@angular/router';
+import { AlertController, LoadingController } from '@ionic/angular';
+import { Observable } from 'rxjs';
+import { User } from './user.model';
 
 @Component({
     selector: 'app-auth',
@@ -41,13 +42,13 @@ export class AuthPage implements OnInit {
             message: 'Logging in...'
         }).then(loadingEl => {
             loadingEl.present();
-            let authObs: Observable<AuthResponseData>;
+            let authObs: Observable<User>;
 
             authObs = this.authService.login(email, password);
 
             authObs.subscribe(resData => {
                 loadingEl.dismiss();
-                this.router.navigateByUrl(this.authService.getUrlByRole(resData.role_id));
+                this.router.navigateByUrl(this.authService.getUrlByRole(resData.role.id));
             }, error => {
                 loadingEl.dismiss();
                 console.log(error);

@@ -19,18 +19,32 @@
     </ion-segment>
 
     <ion-list *ngIf="selectedSegment === 'where'">
-        <ion-item>
-            <ion-label>
-                where
-            </ion-label>
+        <ion-item lines="none">
+            <ion-label>Address</ion-label>
+            <ion-label>{{ service.address }}</ion-label>
+        </ion-item>
+        <ion-item lines="none">
+            <ion-label>Zip</ion-label>
+            <ion-label>{{ service.zip }}</ion-label>
+        </ion-item>
+        <ion-item lines="none">
+            <ion-label>City</ion-label>
+            <ion-label>{{ service.city }}</ion-label>
+        </ion-item>
+        <ion-item lines="none">
+            <ion-label>Start Date</ion-label>
+            <ion-label>{{ service.startDate.toLocaleDateString('es-ES', {dateStyle: 'long'}) }}</ion-label>
+        </ion-item>
+        <ion-item lines="none">
+            <ion-label>Start Time</ion-label>
+            <ion-label>{{ service.startDate.toLocaleTimeString('es-ES', {timeStyle: 'short', hour12: true}) }}</ion-label>
         </ion-item>
     </ion-list>
 
     <ion-list *ngIf="selectedSegment === 'who'">
         <ion-item>
-            <ion-label>
-                who
-            </ion-label>
+            <ion-label>Client</ion-label>
+            <ion-label>{{ client.firstName }} {{ client.lastName }}</ion-label>
         </ion-item>
     </ion-list>
 

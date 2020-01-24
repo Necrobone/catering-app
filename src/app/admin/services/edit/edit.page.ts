@@ -167,33 +167,6 @@ export class EditPage implements OnInit, OnDestroy {
         });
     }
 
-    onDestroy() {
-        this.alertController.create({
-            header: 'Delete Service',
-            message: 'Are you sure that you want to delete this service?',
-            buttons: [
-                {
-                    text: 'Cancel',
-                    role: 'cancel',
-                    cssClass: 'secondary',
-                },
-                {
-                    text: 'Okay',
-                    handler: () => {
-                        this.servicesService.delete(
-                            this.service.id
-                        ).subscribe(() => {
-                            this.form.reset();
-                            this.router.navigate(['/admin/services']);
-                        });
-                    }
-                }
-            ]
-        }).then(loadingEl => {
-            loadingEl.present();
-        });
-    }
-
     onApprove() {
         this.alertController.create({
             header: 'Approve Service',

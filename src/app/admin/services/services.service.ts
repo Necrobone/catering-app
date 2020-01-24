@@ -122,29 +122,6 @@ export class ServicesService {
         );
     }
 
-    delete(id: number) {
-        return this.authService.userId
-            .pipe(
-                take(1),
-                switchMap(userId => {
-                    if (!userId) {
-                        throw new Error('No user found!');
-                    }
-
-                    return this.http.delete(
-                        `http://api.test/api/services/${id}?api_token=${this.authService.user.token}`
-                    );
-                }),
-                switchMap(() => {
-                    return this.services;
-                }),
-                take(1),
-                tap(services => {
-                    this._services.next(services.filter(service => service.id !== id));
-                })
-            );
-    }
-
     toggle(id: number, approved: boolean) {
         return this.authService.userId
             .pipe(

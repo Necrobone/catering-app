@@ -42,8 +42,8 @@ export class EditPage implements OnInit, OnDestroy {
 
             this.serviceSubscription = this.servicesService.getService(+paramMap.get('id')).subscribe(service => {
                 this.service = service;
-                this.client = this.service.users.filter(user => user.roleId === USER).pop();
-                this.employees = this.service.users.filter(user => user.roleId === EMPLOYEE);
+                this.client = this.service.users.filter(user => user.role.id === USER).pop();
+                this.employees = this.service.users.filter(user => user.role.id === EMPLOYEE);
             }, error => {
                 this.alertController.create({
                     header: 'An error ocurred!',

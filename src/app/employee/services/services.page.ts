@@ -3,6 +3,7 @@ import { IonInfiniteScroll, LoadingController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { ServicesService } from './services.service';
 import { Service } from '../../admin/services/service.model';
+import { SegmentChangeEventDetail } from '@ionic/core';
 
 @Component({
     selector: 'app-services',
@@ -12,6 +13,8 @@ import { Service } from '../../admin/services/service.model';
 export class ServicesPage implements OnInit {
     @ViewChild(IonInfiniteScroll, {read: undefined, static: false}) infiniteScroll: IonInfiniteScroll;
     services: Service[];
+    filteredServices: Service[];
+    actualFilter = 'pending';
     private subscription: Subscription;
 
     constructor(
@@ -23,6 +26,18 @@ export class ServicesPage implements OnInit {
     ngOnInit() {
         this.subscription = this.servicesService.services.subscribe(services => {
             this.services = services;
+            switch (this.actualFilter) {
+                case 'approved':
+                    this.filteredServices = this.services.filter(service => service.approved === 1);
+                    break;
+                case 'rejected':
+                    this.filteredServices = this.services.filter(service => service.approved === 0);
+                    break;
+                case 'pending':
+                default:
+                    this.filteredServices = this.services.filter(service => service.approved === null);
+                    break;
+            }
         });
     }
 
@@ -47,5 +62,23 @@ export class ServicesPage implements OnInit {
         this.servicesService.fetch().subscribe(() => {
             event.target.complete();
         });
+    }
+
+    onFilterUpdate(event: CustomEvent<SegmentChangeEventDetail>) {
+        switch (event.detail.value) {
+            case 'approved':
+                this.actualFilter = 'approved';
+                this.filteredServices = this.services.filter(service => service.approved === 1);
+                break;
+            case 'rejected':
+                this.actualFilter = 'rejected';
+                this.filteredServices = this.services.filter(service => service.approved === 0);
+                break;
+            case 'pending':
+            default:
+                this.actualFilter = 'pending';
+                this.filteredServices = this.services.filter(service => service.approved === null);
+                break;
+        }
     }
 }
