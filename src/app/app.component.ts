@@ -1,10 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { Platform } from '@ionic/angular';
-import { AuthService } from './auth/auth.service';
+import { AuthService, ADMINISTRATOR, EMPLOYEE } from './auth/auth.service';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Capacitor, Plugins } from '@capacitor/core';
+import { User } from './auth/user.model';
 
 @Component({
     selector: 'app-root',
@@ -12,6 +13,9 @@ import { Capacitor, Plugins } from '@capacitor/core';
     styleUrls: ['app.component.scss']
 })
 export class AppComponent implements OnInit, OnDestroy {
+    user: User;
+    administrator = ADMINISTRATOR;
+    employee = EMPLOYEE;
     private subscription: Subscription;
     private previousAuthState = false;
 
@@ -40,6 +44,8 @@ export class AppComponent implements OnInit, OnDestroy {
             if (!isAuth && this.previousAuthState !== isAuth) {
                 this.router.navigateByUrl('/auth');
             }
+
+            this.user = this.authService.user;
 
             this.previousAuthState = isAuth;
         });
