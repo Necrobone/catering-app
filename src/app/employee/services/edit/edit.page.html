@@ -47,7 +47,7 @@
         <ion-list-header color="tertiary"><h1>Map</h1></ion-list-header>
     </ion-list>
 
-    <app-location-picker *ngIf="selectedSegment === 'where'"></app-location-picker>
+    <app-location-display center="{{ service.address }},{{ service.zip }}, {{ service.city }}" *ngIf="selectedSegment === 'where'"></app-location-display>
 
     <ion-list *ngIf="selectedSegment === 'who'">
         <ion-list-header color="tertiary"><h1>Client</h1></ion-list-header>
