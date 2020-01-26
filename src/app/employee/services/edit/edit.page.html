@@ -45,13 +45,9 @@
 
     <ion-list *ngIf="selectedSegment === 'where'">
         <ion-list-header color="tertiary"><h1>Map</h1></ion-list-header>
-
-        <ion-item>
-            <ion-label>
-                MAPA
-            </ion-label>
-        </ion-item>
     </ion-list>
+
+    <app-location-picker *ngIf="selectedSegment === 'where'"></app-location-picker>
 
     <ion-list *ngIf="selectedSegment === 'who'">
         <ion-list-header color="tertiary"><h1>Client</h1></ion-list-header>
