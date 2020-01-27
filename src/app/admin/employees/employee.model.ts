@@ -14,4 +14,8 @@ export class Employee {
     get apiToken() {
         return this._apiToken;
     }
+
+    get roleId() {
+        return typeof this.role === 'number' ? this.role : this.role.id;
+    }
 }

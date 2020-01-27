@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { Platform } from '@ionic/angular';
-import { AuthService, ADMINISTRATOR, EMPLOYEE } from './auth/auth.service';
+import { AuthService, ADMINISTRATOR, EMPLOYEE, USER } from './auth/auth.service';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Capacitor, Plugins } from '@capacitor/core';
@@ -16,6 +16,7 @@ export class AppComponent implements OnInit, OnDestroy {
     user: User;
     administrator = ADMINISTRATOR;
     employee = EMPLOYEE;
+    client = USER;
     private subscription: Subscription;
     private previousAuthState = false;
 
