@@ -1,43 +1,43 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-menu-button menu="sideMenu"></ion-menu-button>
-    </ion-buttons>
-    <ion-title>Services</ion-title>
-  </ion-toolbar>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-menu-button menu="sideMenu"></ion-menu-button>
+        </ion-buttons>
+        <ion-title>Services</ion-title>
+    </ion-toolbar>
 </ion-header>
 
 <!-- Default Refresher -->
 <ion-content>
-  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
-    <ion-refresher-content></ion-refresher-content>
-  </ion-refresher>
+    <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+        <ion-refresher-content></ion-refresher-content>
+    </ion-refresher>
 
-  <ion-segment (ionChange)="onFilterUpdate($event)">
-    <ion-segment-button value="pending" checked>Pending</ion-segment-button>
-    <ion-segment-button value="approved">Approved</ion-segment-button>
-    <ion-segment-button value="rejected">Rejected</ion-segment-button>
-  </ion-segment>
+    <ion-segment (ionChange)="onFilterUpdate($event)">
+        <ion-segment-button value="pending" checked>Pending</ion-segment-button>
+        <ion-segment-button value="approved">Approved</ion-segment-button>
+        <ion-segment-button value="rejected">Rejected</ion-segment-button>
+    </ion-segment>
 
-  <ion-list>
-    <ion-item *ngFor="let service of filteredServices" [href]="'/employee/services/edit/' + service.id" detail>
+    <ion-list>
+        <ion-item *ngFor="let service of filteredServices" [href]="'/user/services/edit/' + service.id" detail>
 
-      <ion-label>
-        <h2>{{ service.address }}</h2>
-        <h3>{{ service.province.name }}</h3>
-        <p>{{ service.startDate }}</p>
-      </ion-label>
+            <ion-label>
+                <h2>{{ service.address }}</h2>
+                <h3>{{ service.province.name }}</h3>
+                <p>{{ service.startDate }}</p>
+            </ion-label>
 
-      <ion-badge *ngIf="1 === service.approved" color="success">Approved</ion-badge>
-      <ion-badge *ngIf="0 === service.approved" color="danger">Rejected</ion-badge>
-      <ion-badge *ngIf="null === service.approved" color="warning">Pending</ion-badge>
-    </ion-item>
-  </ion-list>
+            <ion-badge *ngIf="1 === service.approved" color="success">Approved</ion-badge>
+            <ion-badge *ngIf="0 === service.approved" color="danger">Rejected</ion-badge>
+            <ion-badge *ngIf="null === service.approved" color="warning">Pending</ion-badge>
+        </ion-item>
+    </ion-list>
 
-  <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event)">
-    <ion-infinite-scroll-content
-            loadingSpinner="bubbles"
-            loadingText="Loading more data...">
-    </ion-infinite-scroll-content>
-  </ion-infinite-scroll>
+    <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event)">
+        <ion-infinite-scroll-content
+                loadingSpinner="bubbles"
+                loadingText="Loading more data...">
+        </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
 </ion-content>

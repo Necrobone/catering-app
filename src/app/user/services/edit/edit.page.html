@@ -1,7 +1,7 @@
 <ion-header>
     <ion-toolbar>
         <ion-buttons slot="start">
-            <ion-back-button defaultHref="/employee/services"></ion-back-button>
+            <ion-back-button defaultHref="/user/services"></ion-back-button>
         </ion-buttons>
         <ion-title>View Service</ion-title>
     </ion-toolbar>
@@ -39,7 +39,10 @@
         </ion-item>
         <ion-item lines="none">
             <ion-label>Start Time</ion-label>
-            <ion-label>{{ service.startDate.toLocaleTimeString('es-ES', {timeStyle: 'short', hour12: true}) }}</ion-label>
+            <ion-label>{{ service.startDate.toLocaleTimeString('es-ES', {
+                timeStyle: 'short',
+                hour12: true
+            }) }}</ion-label>
         </ion-item>
     </ion-list>
 
@@ -47,7 +50,8 @@
         <ion-list-header color="tertiary"><h1>Map</h1></ion-list-header>
     </ion-list>
 
-    <app-location-display center="{{ service.address }},{{ service.zip }}, {{ service.city }}" *ngIf="selectedSegment === 'where'"></app-location-display>
+    <app-location-display center="{{ service.address }},{{ service.zip }}, {{ service.city }}"
+                          *ngIf="selectedSegment === 'where'"></app-location-display>
 
     <ion-list *ngIf="selectedSegment === 'who'">
         <ion-list-header color="tertiary"><h1>Client</h1></ion-list-header>
