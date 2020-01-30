@@ -1,0 +1,226 @@
+<ion-header translucent>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-back-button defaultHref="/user/services"></ion-back-button>
+        </ion-buttons>
+        <ion-title>Add a new service</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen class="ion-padding">
+    <ion-slides scrollbar="true" [options]="config" #slider>
+        <ion-slide>
+            <ion-list>
+                <ion-list-header color="tertiary"><h1>Event</h1></ion-list-header>
+            </ion-list>
+            <ion-img src="assets/image/events.png"></ion-img>
+            <p>This will show you what menus and dishes are available for that kind of event.</p>
+            <form *ngIf="formLoaded" #eventForm="ngForm">
+                <ion-select placeholder="Select an event" ngModel name="event" required>
+                    <ion-select-option *ngFor="let event of events" [value]="event">{{ event.name }}</ion-select-option>
+                </ion-select>
+                <ion-item *ngIf="formError" lines="none">
+                    <ion-label color="danger" class="ion-text-center">Event is required</ion-label>
+                </ion-item>
+            </form>
+        </ion-slide>
+
+        <ion-slide>
+            <ion-list>
+                <ion-list-header color="tertiary"><h1>Food</h1></ion-list-header>
+            </ion-list>
+
+            <ion-item *ngIf="formError" lines="none">
+                <ion-label color="danger" class="ion-text-center">Choose at least one item</ion-label>
+            </ion-item>
+
+            <ion-segment (ionChange)="onFilterUpdate($event)">
+                <ion-segment-button value="dishes" checked>Dishes</ion-segment-button>
+                <ion-segment-button value="menus">Menus</ion-segment-button>
+            </ion-segment>
+
+            <ion-card *ngFor="let item of list">
+                <ion-card-header>
+                    <ion-card-title>{{ item.name }}</ion-card-title>
+                </ion-card-header>
+
+                <ion-img *ngIf="item.image" [src]="item.image"></ion-img>
+
+                <ion-card-content *ngIf="item.description">
+                    {{ item.description }}
+                    <ion-item lines="none">
+                        <ion-label>Add {{ item.name }}</ion-label>
+                        <ion-checkbox name="food" [value]="item" (ionChange)="toggleDish($event)" [checked]="selectedDishes.indexOf(item) !== -1"></ion-checkbox>
+                    </ion-item>
+                </ion-card-content>
+
+                <ion-card-content *ngIf="item.dishes">
+                    <ion-list>
+                        <ion-item *ngFor="let dish of item.dishes" lines="none">
+                            <ion-avatar slot="start">
+                                <img src="{{ dish.image }}" alt="{{ dish.name }} image">
+                            </ion-avatar>
+                            <ion-label>
+                                <h2>{{ dish.name }}</h2>
+                                <p>{{ dish.description }}</p>
+                            </ion-label>
+                        </ion-item>
+                    </ion-list>
+
+                    <ion-item lines="none">
+                        <ion-label>Add {{ item.name }}</ion-label>
+                        <ion-checkbox name="food" [value]="item" (ionChange)="toggleMenu($event)" [checked]="selectedMenus.indexOf(item) !== -1"></ion-checkbox>
+                    </ion-item>
+                </ion-card-content>
+            </ion-card>
+        </ion-slide>
+
+        <ion-slide>
+            <ion-list>
+                <ion-list-header color="tertiary"><h1>Location</h1></ion-list-header>
+            </ion-list>
+
+            <form *ngIf="formLoaded" #serviceForm="ngForm">
+                <ion-grid>
+                    <ion-row>
+                        <ion-col size-sm="6" offset-sm="3">
+                            <ion-item lines="none">
+                                <ion-label position="floating">Address</ion-label>
+                                <ion-input type="text" name="address" ngModel autocomplete autocorrect maxlength="255" required #addressController="ngModel"></ion-input>
+                            </ion-item>
+                            <ion-item *ngIf="(formError && !addressController.valid) || (!addressController.valid && addressController.touched)" lines="none">
+                                <ion-label color="danger" class="ion-text-center">Address is empty or too long.</ion-label>
+                            </ion-item>
+                        </ion-col>
+                    </ion-row>
+                    <ion-row>
+                        <ion-col size-sm="6" offset-sm="3">
+                            <ion-item lines="none">
+                                <ion-label position="floating">Zip</ion-label>
+                                <ion-input type="text" name="zip" ngModel autocomplete autocorrect maxlength="255" required #zipController="ngModel"></ion-input>
+                            </ion-item>
+                            <ion-item *ngIf="(formError && !zipController.valid) || (!zipController.valid && zipController.touched)" lines="none">
+                                <ion-label color="danger" class="ion-text-center">Zip is empty or too long.</ion-label>
+                            </ion-item>
+                        </ion-col>
+                    </ion-row>
+                    <ion-row>
+                        <ion-col size-sm="6" offset-sm="3">
+                            <ion-item lines="none">
+                                <ion-label position="floating">City</ion-label>
+                                <ion-input type="text" name="city" ngModel autocomplete autocorrect maxlength="255" required #cityController="ngModel"></ion-input>
+                            </ion-item>
+                            <ion-item *ngIf="(formError && !cityController.valid) || (!cityController.valid && cityController.touched)" lines="none">
+                                <ion-label color="danger" class="ion-text-center">City is empty or too long.</ion-label>
+                            </ion-item>
+                        </ion-col>
+                    </ion-row>
+                    <ion-row>
+                        <ion-col size-sm="6" offset-sm="3">
+                            <ion-item lines="none">
+                                <ion-label>Start Date</ion-label>
+                                <ion-datetime name="startDate" ngModel required #startDateController="ngModel" display-format="DD MMMM YYYY" picker-format="DD MMM YYYY" placeholder="Select Date"></ion-datetime>
+                            </ion-item>
+                            <ion-item *ngIf="(formError && !startDateController.valid) || (!startDateController.valid && startDateController.touched)" lines="none">
+                                <ion-label color="danger" class="ion-text-center">Start date is required</ion-label>
+                            </ion-item>
+                        </ion-col>
+                    </ion-row>
+                    <ion-row>
+                        <ion-col size-sm="6" offset-sm="3">
+                            <ion-item lines="none">
+                                <ion-label>Start Time</ion-label>
+                                <ion-datetime name="startDate" ngModel required #startTimeController="ngModel" display-format="h:mm A" picker-format="h:mm A" placeholder="Select Time"></ion-datetime>
+                            </ion-item>
+                            <ion-item *ngIf="(formError && !startTimeController.valid) || (!startTimeController.valid && startTimeController.touched)" lines="none">
+                                <ion-label color="danger" class="ion-text-center">Start time is required</ion-label>
+                            </ion-item>
+                        </ion-col>
+                    </ion-row>
+                    <ion-row>
+                        <ion-col size-sm="6" offset-sm="3">
+                            <ion-item lines="none">
+                                <ion-label>Province</ion-label>
+                                <ion-select name="province" ngModel required #provinceController="ngModel" placeholder="Select One">
+                                    <ion-select-option *ngFor="let province of provinces" [value]="province">{{ province.name }}</ion-select-option>
+                                </ion-select>
+                            </ion-item>
+                            <ion-item *ngIf="(formError && !provinceController.valid) || (!provinceController.valid && provinceController.touched)" lines="none">
+                                <ion-label color="danger" class="ion-text-center">Province is required</ion-label>
+                            </ion-item>
+                        </ion-col>
+                    </ion-row>
+                </ion-grid>
+            </form>
+        </ion-slide>
+
+        <ion-slide>
+            <ion-list>
+                <ion-list-header color="tertiary"><h1>Resume</h1></ion-list-header>
+            </ion-list>
+
+            <h1>Map</h1>
+
+            <app-location-display *ngIf="selectedAddress && selectedZip && selectedCity" center="{{ selectedAddress }}, {{ selectedZip }}, {{ selectedCity }}"></app-location-display>
+
+            <h1>Order</h1>
+
+            <ion-list>
+                <ion-item *ngFor="let dish of selectedDishes" lines="none">
+                    <ion-avatar slot="start">
+                        <img src="{{ dish.image }}" alt="{{ dish.name }} image">
+                    </ion-avatar>
+                    <ion-label>
+                        <h2>{{ dish.name }}</h2>
+                        <p>{{ dish.description }}</p>
+                    </ion-label>
+                </ion-item>
+
+                <ion-item *ngFor="let menu of selectedMenus" lines="none">
+                    <ion-list>
+                        <h2>{{ menu.name }}</h2>
+
+                        <ion-item *ngFor="let dish of menu.dishes" lines="none">
+                            <ion-avatar slot="start">
+                                <img src="{{ dish.image }}" alt="{{ dish.name }} image">
+                            </ion-avatar>
+                            <ion-label>
+                                <h2>{{ dish.name }}</h2>
+                                <p>{{ dish.description }}</p>
+                            </ion-label>
+                        </ion-item>
+                    </ion-list>
+                </ion-item>
+            </ion-list>
+        </ion-slide>
+    </ion-slides>
+</ion-content>
+
+<ion-footer no-border>
+    <ion-toolbar>
+        <ion-grid fixed>
+            <ion-row *ngIf="firstSlide">
+                <ion-col size="10" offset="1">
+                    <ion-button color="tertiary" expand="full" shape="round" (click)="nextSlide()">Next
+                    </ion-button>
+                </ion-col>
+            </ion-row>
+            <ion-row *ngIf="lastSlide">
+                <ion-col size="6">
+                    <ion-button color="tertiary" expand="full" shape="round" (click)="previousSlide()">Back</ion-button>
+                </ion-col>
+                <ion-col size="6">
+                    <ion-button color="tertiary" expand="full" shape="round" (click)="onCreate()">Finish</ion-button>
+                </ion-col>
+            </ion-row>
+            <ion-row *ngIf="!firstSlide && !lastSlide">
+                <ion-col size="6">
+                    <ion-button color="tertiary" expand="full" shape="round" (click)="previousSlide()">Back</ion-button>
+                </ion-col>
+                <ion-col size="6">
+                    <ion-button color="tertiary" expand="full" shape="round" (click)="nextSlide()">Next</ion-button>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+    </ion-toolbar>
+</ion-footer>

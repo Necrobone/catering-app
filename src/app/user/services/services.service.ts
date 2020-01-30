@@ -1,9 +1,12 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
-import { HttpClient } from '@angular/common/http';
-import { AuthService } from '../../auth/auth.service';
+import { map, switchMap, take, tap } from 'rxjs/operators';
+import { Dish } from '../../admin/dishes/dish.model';
+import { Event } from '../../admin/events/event.model';
 import { Service } from '../../admin/services/service.model';
+import { AuthService } from '../../auth/auth.service';
+import { Province } from '../../province.model';
 
 @Injectable({
     providedIn: 'root'
@@ -68,5 +71,53 @@ export class ServicesService {
                     service.users
                 );
             }));
+    }
+
+    add(
+        address: string,
+        zip: string,
+        city: string,
+        startDate: Date,
+        province: Province,
+        event: Event,
+        dishes: Dish[]
+    ) {
+        let generatedId: number;
+        let newService: Service;
+        return this.authService.userId
+            .pipe(
+                take(1),
+                switchMap(userId => {
+                    if (!userId) {
+                        throw new Error('No user found!');
+                    }
+
+                    newService = new Service(
+                        Math.random(),
+                        address,
+                        zip,
+                        city,
+                        startDate,
+                        null,
+                        province,
+                        event,
+                        dishes,
+                        [this.authService.user]
+                    );
+                    return this.http.post<{ id: number }>(
+                        'http://api.test/api/services?api_token=' + this.authService.user.token,
+                        {...newService, id: null}
+                    );
+                }),
+                switchMap(resData => {
+                    generatedId = resData.id;
+                    return this.services;
+                }),
+                take(1),
+                tap(services => {
+                    newService.id = generatedId;
+                    this._services.next(services.concat(newService));
+                })
+            );
     }
 }
