@@ -7,11 +7,11 @@
     </ion-toolbar>
 </ion-header>
 
-<ion-content fullscreen class="ion-padding">
+<ion-content fullscreen class="ion-padding" #content>
     <ion-slides scrollbar="true" [options]="config" #slider>
         <ion-slide>
             <ion-list>
-                <ion-list-header color="tertiary"><h1>Event</h1></ion-list-header>
+                <ion-list-header color="secondary"><h1>Event</h1></ion-list-header>
             </ion-list>
             <ion-img src="assets/image/events.png"></ion-img>
             <p>This will show you what menus and dishes are available for that kind of event.</p>
@@ -27,7 +27,7 @@
 
         <ion-slide>
             <ion-list>
-                <ion-list-header color="tertiary"><h1>Food</h1></ion-list-header>
+                <ion-list-header color="secondary"><h1>Food</h1></ion-list-header>
             </ion-list>
 
             <ion-item *ngIf="formError" lines="none">
@@ -73,11 +73,15 @@
                     </ion-item>
                 </ion-card-content>
             </ion-card>
+
+            <ion-item *ngIf="this.list.length === 0" lines="none">
+                <ion-label color="danger" class="ion-text-center">There are no items for this event</ion-label>
+            </ion-item>
         </ion-slide>
 
         <ion-slide>
             <ion-list>
-                <ion-list-header color="tertiary"><h1>Location</h1></ion-list-header>
+                <ion-list-header color="secondary"><h1>Location</h1></ion-list-header>
             </ion-list>
 
             <form *ngIf="formLoaded" #serviceForm="ngForm">
@@ -156,7 +160,7 @@
 
         <ion-slide>
             <ion-list>
-                <ion-list-header color="tertiary"><h1>Resume</h1></ion-list-header>
+                <ion-list-header color="secondary"><h1>Resume</h1></ion-list-header>
             </ion-list>
 
             <h1>Map</h1>
@@ -197,30 +201,27 @@
 </ion-content>
 
 <ion-footer no-border>
-    <ion-toolbar>
-        <ion-grid fixed>
-            <ion-row *ngIf="firstSlide">
-                <ion-col size="10" offset="1">
-                    <ion-button color="tertiary" expand="full" shape="round" (click)="nextSlide()">Next
-                    </ion-button>
-                </ion-col>
-            </ion-row>
-            <ion-row *ngIf="lastSlide">
-                <ion-col size="6">
-                    <ion-button color="tertiary" expand="full" shape="round" (click)="previousSlide()">Back</ion-button>
-                </ion-col>
-                <ion-col size="6">
-                    <ion-button color="tertiary" expand="full" shape="round" (click)="onCreate()">Finish</ion-button>
-                </ion-col>
-            </ion-row>
-            <ion-row *ngIf="!firstSlide && !lastSlide">
-                <ion-col size="6">
-                    <ion-button color="tertiary" expand="full" shape="round" (click)="previousSlide()">Back</ion-button>
-                </ion-col>
-                <ion-col size="6">
-                    <ion-button color="tertiary" expand="full" shape="round" (click)="nextSlide()">Next</ion-button>
-                </ion-col>
-            </ion-row>
-        </ion-grid>
-    </ion-toolbar>
+    <ion-grid fixed no-padding>
+        <ion-row *ngIf="firstSlide">
+            <ion-col size="12" no-padding>
+                <ion-button expand="full" size="large" (click)="nextSlide()">Next</ion-button>
+            </ion-col>
+        </ion-row>
+        <ion-row *ngIf="lastSlide">
+            <ion-col size="6" no-padding>
+                <ion-button expand="full" size="large" (click)="previousSlide()">Back</ion-button>
+            </ion-col>
+            <ion-col size="6" no-padding>
+                <ion-button expand="full" size="large" (click)="onCreate()">Finish</ion-button>
+            </ion-col>
+        </ion-row>
+        <ion-row *ngIf="!firstSlide && !lastSlide">
+            <ion-col size="6" no-padding>
+                <ion-button expand="full" size="large" (click)="previousSlide()">Back</ion-button>
+            </ion-col>
+            <ion-col size="6" no-padding>
+                <ion-button expand="full" size="large" (click)="nextSlide()">Next</ion-button>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
 </ion-footer>

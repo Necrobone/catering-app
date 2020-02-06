@@ -28,3 +28,12 @@
 .ion-invalid.ion-touched ion-label {
   color:var(--ion-color-danger);
 }
+
+ion-content.background {
+  --background: url(./assets/image/background.png) no-repeat 50% 50%;
+  --background-size: cover;
+}
+
+ion-card {
+  background: rgba(255,255,255)!important;
+}

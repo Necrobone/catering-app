@@ -1,35 +1,38 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-menu-button menu="sideMenu"></ion-menu-button>
-    </ion-buttons>
-    <ion-title>Suppliers</ion-title>
-    <ion-buttons slot="primary">
-      <ion-button routerLink="/admin/suppliers/add">
-        <ion-icon name="add" slot="icon-only"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-menu-button menu="sideMenu"></ion-menu-button>
+        </ion-buttons>
+        <ion-buttons slot="start">
+            <ion-back-button defaultHref="/admin"></ion-back-button>
+        </ion-buttons>
+        <ion-title>Suppliers</ion-title>
+        <ion-buttons slot="primary">
+            <ion-button routerLink="/admin/suppliers/add">
+                <ion-icon name="add" slot="icon-only"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
 </ion-header>
 
 <!-- Default Refresher -->
 <ion-content>
-  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
-    <ion-refresher-content></ion-refresher-content>
-  </ion-refresher>
+    <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+        <ion-refresher-content></ion-refresher-content>
+    </ion-refresher>
 
-  <ion-list>
-    <ion-item *ngFor="let supplier of suppliers" [href]="'/admin/suppliers/edit/' + supplier.id" detail>
-      <ion-label>
-        <h2>{{ supplier.name }}</h2>
-      </ion-label>
-    </ion-item>
-  </ion-list>
+    <ion-list>
+        <ion-item *ngFor="let supplier of suppliers" [href]="'/admin/suppliers/edit/' + supplier.id" detail>
+            <ion-label>
+                <h2>{{ supplier.name }}</h2>
+            </ion-label>
+        </ion-item>
+    </ion-list>
 
-  <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event)">
-    <ion-infinite-scroll-content
-            loadingSpinner="bubbles"
-            loadingText="Loading more data...">
-    </ion-infinite-scroll-content>
-  </ion-infinite-scroll>
+    <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event)">
+        <ion-infinite-scroll-content
+                loadingSpinner="bubbles"
+                loadingText="Loading more data...">
+        </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
 </ion-content>

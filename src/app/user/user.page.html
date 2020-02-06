@@ -7,6 +7,41 @@
     </ion-toolbar>
 </ion-header>
 
-<ion-content>
-    <p>User index page.</p>
+<ion-content class="background">
+    <ion-grid>
+        <ion-row class="ion-text-center">
+            <ion-col size="6">
+                <ion-card href="user/services">
+                    <ion-card-header>
+                        <ion-card-title>Services</ion-card-title>
+                    </ion-card-header>
+                    <ion-card-content>
+                        <ion-icon name="today" size="large"></ion-icon>
+                    </ion-card-content>
+                </ion-card>
+            </ion-col>
+            <ion-col size="6">
+                <ion-card href="user/services/add">
+                    <ion-card-header>
+                        <ion-card-title>New Service</ion-card-title>
+                    </ion-card-header>
+                    <ion-card-content>
+                        <ion-icon name="add" size="large"></ion-icon>
+                    </ion-card-content>
+                </ion-card>
+            </ion-col>
+        </ion-row>
+        <ion-row class="ion-text-center">
+            <ion-col size="6">
+                <ion-card href="user/profile">
+                    <ion-card-header>
+                        <ion-card-title>My Profile</ion-card-title>
+                    </ion-card-header>
+                    <ion-card-content>
+                        <ion-icon name="contact" size="large"></ion-icon>
+                    </ion-card-content>
+                </ion-card>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
 </ion-content>

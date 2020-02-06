@@ -33,7 +33,7 @@ export class ServicesService {
                                 services[key].address,
                                 services[key].zip,
                                 services[key].city,
-                                services[key].startDate,
+                                new Date(services[key].startDate),
                                 services[key].approved,
                                 services[key].province,
                                 services[key].event,

@@ -12,17 +12,20 @@
                     <ion-list>
                         <ion-item>
                             <ion-label position="floating">E-mail</ion-label>
-                            <ion-input type="email" ngModel name="email" email required #emailController="ngModel"></ion-input>
+                            <ion-input type="email" ngModel name="email" maxlength="192" email required #emailController="ngModel"></ion-input>
                         </ion-item>
-                        <ion-item *ngIf="!emailController.valid && emailController.touched" lines="none">
-                            <ion-label>Should be a valid email address.</ion-label>
+                        <ion-item *ngIf="emailController.invalid && (emailController.dirty || emailController.touched)" lines="none">
+                            <ion-text *ngIf="emailController.errors.required" color="danger">E-mail Required.</ion-text>
+                            <ion-text *ngIf="emailController.errors.maxlength" color="danger">E-mail is too long.</ion-text>
+                            <ion-text *ngIf="emailController.errors.email" color="danger">Should be a valid email address.</ion-text>
                         </ion-item>
                         <ion-item>
                             <ion-label position="floating">Password</ion-label>
-                            <ion-input type="password" ngModel name="password" required minlength="8" #passwordController="ngModel"></ion-input>
+                            <ion-input type="password" ngModel name="password" maxlength="255" minlength="8" required #passwordController="ngModel"></ion-input>
                         </ion-item>
-                        <ion-item *ngIf="!passwordController.valid && passwordController.touched" lines="none">
-                            <ion-label>Should be minimum 8 password long.</ion-label>
+                        <ion-item *ngIf="passwordController.invalid && (passwordController.dirty || passwordController.touched)" lines="none">
+                            <ion-text *ngIf="passwordController.errors.required" color="danger">Password required</ion-text>
+                            <ion-text *ngIf="passwordController.errors.minlength" color="danger">Should be minimum 8 password long.</ion-text>
                         </ion-item>
                     </ion-list>
                 </ion-col>

@@ -24,4 +24,13 @@ export class Service {
     get eventId() {
         return typeof this.event === 'number' ? this.event : this.event.id;
     }
+
+    get dishesIds() {
+        const result = [];
+        this.dishes.forEach(function(dish, key) {
+            this.push(dish.id);
+        }, result);
+
+        return result;
+    }
 }

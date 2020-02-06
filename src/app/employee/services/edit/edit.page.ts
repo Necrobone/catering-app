@@ -1,13 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs';
-import { ServicesService } from '../services.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController, LoadingController, NavController } from '@ionic/angular';
-import { Service } from '../../../admin/services/service.model';
-import { User } from '../../../auth/user.model';
-import { EMPLOYEE, USER } from '../../../auth/auth.service';
 import { SegmentChangeEventDetail } from '@ionic/core';
+import { Subscription } from 'rxjs';
+import { Service } from '../../../admin/services/service.model';
+import { EMPLOYEE, USER } from '../../../auth/auth.service';
+import { User } from '../../../auth/user.model';
+import { ServicesService } from '../services.service';
 
 @Component({
     selector: 'app-edit',

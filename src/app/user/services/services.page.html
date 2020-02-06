@@ -3,6 +3,9 @@
         <ion-buttons slot="start">
             <ion-menu-button menu="sideMenu"></ion-menu-button>
         </ion-buttons>
+        <ion-buttons slot="start">
+            <ion-back-button defaultHref="/user"></ion-back-button>
+        </ion-buttons>
         <ion-title>Services</ion-title>
         <ion-buttons slot="primary">
             <ion-button routerLink="/user/services/add">
@@ -30,7 +33,10 @@
             <ion-label>
                 <h2>{{ service.address }}</h2>
                 <h3>{{ service.province.name }}</h3>
-                <p>{{ service.startDate }}</p>
+                <p>
+                    {{ service.startDate.toLocaleDateString('es-ES', {dateStyle: 'long'}) }}
+                    {{ service.startDate.toLocaleTimeString('es-ES', {timeStyle: 'short', hour12: true}) }}
+                </p>
             </ion-label>
 
             <ion-badge *ngIf="1 === service.approved" color="success">Approved</ion-badge>

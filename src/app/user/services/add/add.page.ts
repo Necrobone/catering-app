@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
-import { IonSlides, LoadingController } from '@ionic/angular';
+import { IonContent, IonSlides, LoadingController } from '@ionic/angular';
 import { CheckboxChangeEventDetail, SegmentChangeEventDetail } from '@ionic/core';
 import { Subscription } from 'rxjs';
 import { Dish } from '../../../admin/dishes/dish.model';
@@ -20,6 +20,7 @@ import { ServicesService } from '../services.service';
     styleUrls: ['./add.page.scss'],
 })
 export class AddPage implements OnInit, OnDestroy {
+    @ViewChild('content', {static: false}) content: IonContent;
     @ViewChild('slider', {static: false}) slider: IonSlides;
     @ViewChild('eventForm', {static: false}) eventForm: NgForm;
     @ViewChild('serviceForm', {static: false}) serviceForm: NgForm;
@@ -135,6 +136,11 @@ export class AddPage implements OnInit, OnDestroy {
                     }
 
                     this.selectedEvent = this.eventForm.value.event;
+
+                    this.list = this.dishes.filter(dish => dish.eventsIds.indexOf(this.selectedEvent.id) > -1);
+                    this.selectedDishes = [];
+                    this.selectedMenus = [];
+
                     break;
                 case 1:
                     if (this.selectedMenus.length === 0 && this.selectedDishes.length === 0) {
@@ -167,6 +173,7 @@ export class AddPage implements OnInit, OnDestroy {
                     this.slider.lockSwipes(true).then(() => {
                         this.isBeginning();
                         this.isEnd();
+                        this.content.scrollToTop();
                     });
                 });
             });
@@ -185,6 +192,7 @@ export class AddPage implements OnInit, OnDestroy {
                 this.slider.lockSwipes(true).then(() => {
                     this.isBeginning();
                     this.isEnd();
+                    this.content.scrollToTop();
                 });
             });
         });
@@ -201,9 +209,14 @@ export class AddPage implements OnInit, OnDestroy {
 
             this.selectedMenus.forEach(menu => {
                 menu.dishes.forEach(dish => {
-                    this.selectedDishes.push(dish);
+                    const notFound = this.selectedDishes.findIndex( element => element.id === dish.id) === -1;
+
+                    if (notFound) {
+                        this.selectedDishes.push(dish);
+                    }
                 });
             });
+
             this.servicesService.add(
                 this.selectedAddress,
                 this.selectedZip,
@@ -241,12 +254,12 @@ export class AddPage implements OnInit, OnDestroy {
         switch (event.detail.value) {
             case 'menus':
                 this.actualFilter = 'menus';
-                this.list = this.menus;
+                this.list = this.menus.filter(dish => dish.eventsIds.indexOf(this.selectedEvent.id) > -1);
                 break;
             case 'dishes':
             default:
                 this.actualFilter = 'dishes';
-                this.list = this.dishes;
+                this.list = this.dishes.filter(dish => dish.eventsIds.indexOf(this.selectedEvent.id) > -1);
                 break;
         }
     }
@@ -262,6 +275,10 @@ export class AddPage implements OnInit, OnDestroy {
 
         if (this.menuSubscription) {
             this.menuSubscription.unsubscribe();
+        }
+
+        if (this.provinceSubscription) {
+            this.provinceSubscription.unsubscribe();
         }
     }
 }

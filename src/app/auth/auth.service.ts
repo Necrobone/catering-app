@@ -156,12 +156,15 @@ export class AuthService implements OnDestroy {
         );
     }
 
-    signup(email: string, password: string) {
+    signup(firstName: string, lastName: string, email: string, password: string, passwordConfirmation: string) {
         return this.http.post<User>(
             `http://api.test/api/signup`,
             {
+                first_name: firstName,
+                last_name: lastName,
                 email,
-                password
+                password,
+                password_confirmation: passwordConfirmation
             }
         ).pipe(tap(this.setUserData.bind(this)));
     }

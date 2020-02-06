@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { AuthService } from './auth.service';
 import { Router } from '@angular/router';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { Observable } from 'rxjs';
+import { AuthService } from './auth.service';
 import { User } from './user.model';
 
 @Component({
@@ -51,25 +51,41 @@ export class AuthPage implements OnInit {
                 this.router.navigateByUrl(this.authService.getUrlByRole(resData.role.id));
             }, error => {
                 loadingEl.dismiss();
-                console.log(error);
-                const code = error.error.error.message;
+
                 let message;
-                switch (code) {
-                    case 'EMAIL_EXISTS':
-                        message = 'This email address exists already';
+                switch (error.error.error) {
+                    case 'EMAIL_REQUIRED':
+                        message = 'Email address can not be empty';
+                        break;
+                    case 'EMAIL_INVALID':
+                        message = 'Email address is invalid';
+                        break;
+                    case 'EMAIL_TOO_LONG':
+                        message = 'Email address is too long';
                         break;
                     case 'EMAIL_NOT_FOUND':
-                        message = 'Email address could not be found';
+                        message = 'Email address do not exist';
                         break;
-                    case 'INVALID_PASSWORD':
-                        message = 'This password is not correct';
+                    case 'PASSWORD_REQUIRED':
+                        message = 'Password can not be empty';
+                        break;
+                    case 'PASSWORD_INVALID':
+                        message = 'Password is invalid';
+                        break;
+                    case 'PASSWORD_TOO_SHORT':
+                        message = 'Password is too short';
+                        break;
+                    case 'PASSWORD_TOO_LONG':
+                        message = 'Password is too long';
+                        break;
+                    case 'LOGIN_ERROR':
+                        message = 'Credentials you supplied were not correct';
                         break;
                     default:
-                        message = 'Could not sign you up, please try again';
+                        message = 'Unexpected error. Please try again.';
                         break;
                 }
-                if (code === 'EMAIL_EXISTS') {
-                }
+
                 this.showAlert(message);
             });
         });
