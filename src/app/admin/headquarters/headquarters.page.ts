@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
-import { showAlert } from '../../app.component';
 import { Headquarter } from './headquarter.model';
 import { HeadquartersService } from './headquarters.service';
 
@@ -126,5 +125,5 @@ export const headquarterError = (error: any) => {
             break;
     }
 
-    showAlert('Persisting failed', message);
+    return message;
 };

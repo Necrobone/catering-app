@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
+import { showAlert } from '../../../app.component';
 import { Province } from '../../../province.model';
 import { ProvincesService } from '../../../provinces.service';
 import { headquarterError } from '../headquarters.page';
@@ -100,7 +101,7 @@ export class AddPage implements OnInit {
             }, error => {
                 loadingEl.dismiss();
 
-                headquarterError(error);
+                showAlert('Error creating headquarter', headquarterError(error));
             });
         });
     }

@@ -1,13 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
-import { EmployeesService } from '../employees.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController, LoadingController, NavController } from '@ionic/angular';
-import { Employee } from '../employee.model';
+import { Subscription } from 'rxjs';
+import { showAlert } from '../../../app.component';
+import { AuthService } from '../../../auth/auth.service';
 import { Role } from '../../../auth/role.model';
 import { RolesService } from '../../../auth/roles.service';
-import { AuthService } from '../../../auth/auth.service';
+import { Employee } from '../employee.model';
+import { employeeError } from '../employees.page';
+import { EmployeesService } from '../employees.service';
 
 @Component({
     selector: 'app-edit',
@@ -47,11 +49,13 @@ export class EditPage implements OnInit, OnDestroy {
                 this.alertController.create({
                     header: 'An error ocurred!',
                     message: 'Roles could not be fetched. Please try again later.',
-                    buttons: [{
-                        text: 'Okay', handler: () => {
-                            this.router.navigate(['admin/employees']);
+                    buttons: [
+                        {
+                            text: 'Okay', handler: () => {
+                                this.router.navigate(['admin/employees']);
+                            }
                         }
-                    }]
+                    ]
                 }).then(alertEl => {
                     alertEl.present();
                 });
@@ -73,9 +77,13 @@ export class EditPage implements OnInit, OnDestroy {
                     }),
                     password: new FormControl(null, {
                         updateOn: 'blur',
-                        validators: [Validators.maxLength(255), Validators.minLength(8)]
+                        validators: [
+                            Validators.maxLength(255),
+                            Validators.minLength(8),
+                            Validators.pattern('^.*(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\\d\\X])(?=.*[!$#%]).*$')
+                        ]
                     }),
-                    role: new FormControl(typeof this.employee.role === 'number' ? this.employee.role : this.employee.role.id, {
+                    role: new FormControl(this.employee.roleId, {
                         updateOn: 'blur',
                         validators: [Validators.required, Validators.min(1)]
                     })
@@ -84,11 +92,13 @@ export class EditPage implements OnInit, OnDestroy {
                 this.alertController.create({
                     header: 'An error ocurred!',
                     message: 'Employee could not be fetched. Please try again later.',
-                    buttons: [{
-                        text: 'Okay', handler: () => {
-                            this.router.navigate(['admin/employees']);
+                    buttons: [
+                        {
+                            text: 'Okay', handler: () => {
+                                this.router.navigate(['admin/employees']);
+                            }
                         }
-                    }]
+                    ]
                 }).then(alertEl => {
                     alertEl.present();
                 });
@@ -104,6 +114,21 @@ export class EditPage implements OnInit, OnDestroy {
             this.rolesService.fetch().subscribe(() => {
                 this.formLoaded = true;
                 loadingEl.dismiss();
+            }, error => {
+                loadingEl.dismiss();
+                this.alertController.create({
+                    header: 'An error ocurred!',
+                    message: 'Roles could not be fetched. Please try again later.',
+                    buttons: [
+                        {
+                            text: 'Okay', handler: () => {
+                                this.router.navigate(['admin/employees']);
+                            }
+                        }
+                    ]
+                }).then(alertEl => {
+                    alertEl.present();
+                });
             });
         });
     }
@@ -128,6 +153,10 @@ export class EditPage implements OnInit, OnDestroy {
                 loadingEl.dismiss();
                 this.form.reset();
                 this.router.navigate(['/admin/employees']);
+            }, error => {
+                loadingEl.dismiss();
+
+                showAlert('Error updating employee', employeeError(error));
             });
         });
     }
@@ -145,11 +174,21 @@ export class EditPage implements OnInit, OnDestroy {
                 {
                     text: 'Okay',
                     handler: () => {
-                        this.employeesService.delete(
-                            this.employee.id
-                        ).subscribe(() => {
-                            this.form.reset();
-                            this.router.navigate(['/admin/employees']);
+                        this.loadingController.create({
+                            message: 'Deleting employee...'
+                        }).then(loadingEl => {
+                            loadingEl.present();
+                            this.employeesService.delete(
+                                this.employee.id
+                            ).subscribe(() => {
+                                loadingEl.dismiss();
+                                this.form.reset();
+                                this.router.navigate(['/admin/employees']);
+                            }, error => {
+                                loadingEl.dismiss();
+
+                                showAlert('Deleting failed', 'Unexpected error. Please try again.');
+                            });
                         });
                     }
                 }

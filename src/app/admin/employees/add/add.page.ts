@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { LoadingController } from '@ionic/angular';
-import { EmployeesService } from '../employees.service';
+import { AlertController, LoadingController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
+import { showAlert } from '../../../app.component';
 import { Role } from '../../../auth/role.model';
 import { RolesService } from '../../../auth/roles.service';
+import { employeeError } from '../employees.page';
+import { EmployeesService } from '../employees.service';
 
 @Component({
     selector: 'app-add',
@@ -21,7 +23,8 @@ export class AddPage implements OnInit {
         private employeesService: EmployeesService,
         private rolesService: RolesService,
         private router: Router,
-        private loadingController: LoadingController
+        private loadingController: LoadingController,
+        private alertController: AlertController,
     ) {
     }
 
@@ -60,6 +63,19 @@ export class AddPage implements OnInit {
             loadingEl.present();
             this.rolesService.fetch().subscribe(() => {
                 loadingEl.dismiss();
+            }, error => {
+                loadingEl.dismiss();
+                this.alertController.create({
+                    header: 'An error ocurred!',
+                    message: 'Roles could not be fetched. Please try again later.',
+                    buttons: [{
+                        text: 'Okay', handler: () => {
+                            this.router.navigate(['admin/employees']);
+                        }
+                    }]
+                }).then(alertEl => {
+                    alertEl.present();
+                });
             });
         });
     }
@@ -82,6 +98,10 @@ export class AddPage implements OnInit {
                 loadingEl.dismiss();
                 this.form.reset();
                 this.router.navigate(['/admin/employees']);
+            }, error => {
+                loadingEl.dismiss();
+
+                showAlert('Error creating employee', employeeError(error));
             });
         });
     }

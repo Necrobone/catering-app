@@ -144,7 +144,7 @@ export class EditPage implements OnInit, OnDestroy {
             }, error => {
                 loadingEl.dismiss();
 
-                headquarterError(error);
+                showAlert('Error updating headquarter', headquarterError(error));
             });
         });
     }
@@ -162,13 +162,21 @@ export class EditPage implements OnInit, OnDestroy {
                 {
                     text: 'Okay',
                     handler: () => {
-                        this.headquartersService.delete(
-                            this.headquarter.id
-                        ).subscribe(() => {
-                            this.form.reset();
-                            this.router.navigate(['/admin/headquarters']);
-                        }, error => {
-                            showAlert('Deleting failed', 'Unexpected error. Please try again.');
+                        this.loadingController.create({
+                            message: 'Deleting headquarter...'
+                        }).then(loadingEl => {
+                            loadingEl.present();
+                            this.headquartersService.delete(
+                                this.headquarter.id
+                            ).subscribe(() => {
+                                loadingEl.dismiss();
+                                this.form.reset();
+                                this.router.navigate(['/admin/headquarters']);
+                            }, error => {
+                                loadingEl.dismiss();
+
+                                showAlert('Deleting failed', 'Unexpected error. Please try again.');
+                            });
                         });
                     }
                 }
