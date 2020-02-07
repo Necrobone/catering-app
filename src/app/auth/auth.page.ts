@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AlertController, LoadingController } from '@ionic/angular';
+import { LoadingController } from '@ionic/angular';
 import { Observable } from 'rxjs';
+import { showAlert } from '../app.component';
 import { AuthService } from './auth.service';
 import { User } from './user.model';
 
@@ -16,8 +17,7 @@ export class AuthPage implements OnInit {
     constructor(
         private authService: AuthService,
         private router: Router,
-        private loadingController: LoadingController,
-        private alertController: AlertController
+        private loadingController: LoadingController
     ) {
     }
 
@@ -86,18 +86,8 @@ export class AuthPage implements OnInit {
                         break;
                 }
 
-                this.showAlert(message);
+                showAlert('Authentication failed', message);
             });
-        });
-    }
-
-    private showAlert(message: string) {
-        return this.alertController.create({
-            header: 'Authentication failed',
-            message,
-            buttons: ['Okay']
-        }).then(alertEl => {
-            alertEl.present();
         });
     }
 }

@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
-import { Platform } from '@ionic/angular';
+import { AlertController, Platform } from '@ionic/angular';
 import { AuthService, ADMINISTRATOR, EMPLOYEE, USER } from './auth/auth.service';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -58,3 +58,13 @@ export class AppComponent implements OnInit, OnDestroy {
         }
     }
 }
+
+export const showAlert = (header: string, message: string) => {
+    return new AlertController().create({
+        header,
+        message,
+        buttons: ['Okay']
+    }).then(alert => {
+        alert.present();
+    });
+};

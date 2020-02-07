@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AlertController, LoadingController } from '@ionic/angular';
+import { LoadingController } from '@ionic/angular';
 import { Observable } from 'rxjs';
+import { showAlert } from '../app.component';
 import { AuthService } from '../auth/auth.service';
 import { User } from '../auth/user.model';
 
@@ -17,7 +18,6 @@ export class SignupPage implements OnInit {
         private authService: AuthService,
         private router: Router,
         private loadingController: LoadingController,
-        private alertController: AlertController
     ) {
     }
 
@@ -106,18 +106,8 @@ export class SignupPage implements OnInit {
                         break;
                 }
 
-                this.showAlert(message);
+                showAlert('Signup failed', message);
             });
-        });
-    }
-
-    private showAlert(message: string) {
-        return this.alertController.create({
-            header: 'Authentication failed',
-            message,
-            buttons: ['Okay']
-        }).then(alertEl => {
-            alertEl.present();
         });
     }
 }

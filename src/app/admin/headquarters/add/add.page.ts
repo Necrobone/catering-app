@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { LoadingController } from '@ionic/angular';
-import { HeadquartersService } from '../headquarters.service';
-import { ProvincesService } from '../../../provinces.service';
-import { Province } from '../../../province.model';
+import { AlertController, LoadingController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
+import { Province } from '../../../province.model';
+import { ProvincesService } from '../../../provinces.service';
+import { headquarterError } from '../headquarters.page';
+import { HeadquartersService } from '../headquarters.service';
 
 @Component({
     selector: 'app-add',
@@ -21,7 +22,8 @@ export class AddPage implements OnInit {
         private headquartersService: HeadquartersService,
         private provincesService: ProvincesService,
         private router: Router,
-        private loadingController: LoadingController
+        private loadingController: LoadingController,
+        private alertController: AlertController,
     ) {
     }
 
@@ -60,6 +62,19 @@ export class AddPage implements OnInit {
             loadingEl.present();
             this.provincesService.fetch().subscribe(() => {
                 loadingEl.dismiss();
+            }, error => {
+                loadingEl.dismiss();
+                this.alertController.create({
+                    header: 'An error ocurred!',
+                    message: 'Provinces could not be fetched. Please try again later.',
+                    buttons: [{
+                        text: 'Okay', handler: () => {
+                            this.router.navigate(['admin/headquarters']);
+                        }
+                    }]
+                }).then(alertEl => {
+                    alertEl.present();
+                });
             });
         });
     }
@@ -82,6 +97,10 @@ export class AddPage implements OnInit {
                 loadingEl.dismiss();
                 this.form.reset();
                 this.router.navigate(['/admin/headquarters']);
+            }, error => {
+                loadingEl.dismiss();
+
+                headquarterError(error);
             });
         });
     }

@@ -1,12 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Province } from '../../../province.model';
-import { Subscription } from 'rxjs';
-import { HeadquartersService } from '../headquarters.service';
-import { ProvincesService } from '../../../provinces.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController, LoadingController, NavController } from '@ionic/angular';
+import { Subscription } from 'rxjs';
+import { showAlert } from '../../../app.component';
+import { Province } from '../../../province.model';
+import { ProvincesService } from '../../../provinces.service';
 import { Headquarter } from '../headquarter.model';
+import { headquarterError } from '../headquarters.page';
+import { HeadquartersService } from '../headquarters.service';
 
 @Component({
     selector: 'app-edit',
@@ -102,6 +104,19 @@ export class EditPage implements OnInit, OnDestroy {
             this.provincesService.fetch().subscribe(() => {
                 this.formLoaded = true;
                 loadingEl.dismiss();
+            }, error => {
+                loadingEl.dismiss();
+                this.alertController.create({
+                    header: 'An error ocurred!',
+                    message: 'Provinces could not be fetched. Please try again later.',
+                    buttons: [{
+                        text: 'Okay', handler: () => {
+                            this.router.navigate(['admin/headquarters']);
+                        }
+                    }]
+                }).then(alertEl => {
+                    alertEl.present();
+                });
             });
         });
     }
@@ -126,6 +141,10 @@ export class EditPage implements OnInit, OnDestroy {
                 loadingEl.dismiss();
                 this.form.reset();
                 this.router.navigate(['/admin/headquarters']);
+            }, error => {
+                loadingEl.dismiss();
+
+                headquarterError(error);
             });
         });
     }
@@ -148,6 +167,8 @@ export class EditPage implements OnInit, OnDestroy {
                         ).subscribe(() => {
                             this.form.reset();
                             this.router.navigate(['/admin/headquarters']);
+                        }, error => {
+                            showAlert('Deleting failed', 'Unexpected error. Please try again.');
                         });
                     }
                 }
