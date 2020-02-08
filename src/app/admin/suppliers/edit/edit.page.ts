@@ -1,12 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController, LoadingController, NavController } from '@ionic/angular';
-import { Supplier } from '../supplier.model';
-import { SuppliersService } from '../suppliers.service';
+import { Subscription } from 'rxjs';
+import { showAlert } from '../../../app.component';
 import { Headquarter } from '../../headquarters/headquarter.model';
 import { HeadquartersService } from '../../headquarters/headquarters.service';
+import { Supplier } from '../supplier.model';
+import { supplierError } from '../suppliers.page';
+import { SuppliersService } from '../suppliers.service';
 
 @Component({
     selector: 'app-edit',
@@ -41,40 +43,31 @@ export class EditPage implements OnInit, OnDestroy {
 
             this.headquarterSubscription = this.headquartersService.headquarters.subscribe(headquarters => {
                 this.headquarters = headquarters;
-            }, error => {
-                this.alertController.create({
-                    header: 'An error ocurred!',
-                    message: 'Headquarters could not be fetched. Please try again later.',
-                    buttons: [{
-                        text: 'Okay', handler: () => {
-                            this.router.navigate(['admin/suppliers']);
-                        }
-                    }]
-                }).then(alertEl => {
-                    alertEl.present();
-                });
             });
+
             this.subscription = this.suppliersService.getSupplier(+paramMap.get('id')).subscribe(supplier => {
                 this.supplier = supplier;
                 this.form = new FormGroup({
                     name: new FormControl(this.supplier.name, {
                         updateOn: 'blur',
-                        validators: [Validators.required, Validators.maxLength(255)]
+                        validators: [Validators.required, Validators.maxLength(255)],
                     }),
                     headquarters: new FormControl(this.supplier.headquartersIds, {
                         updateOn: 'blur',
-                        validators: [Validators.required]
+                        validators: [Validators.required],
                     }),
                 });
             }, error => {
                 this.alertController.create({
                     header: 'An error ocurred!',
                     message: 'Supplier could not be fetched. Please try again later.',
-                    buttons: [{
-                        text: 'Okay', handler: () => {
-                            this.router.navigate(['admin/suppliers']);
-                        }
-                    }]
+                    buttons: [
+                        {
+                            text: 'Okay', handler: () => {
+                                this.router.navigate(['admin/suppliers']);
+                            },
+                        },
+                    ],
                 }).then(alertEl => {
                     alertEl.present();
                 });
@@ -90,6 +83,21 @@ export class EditPage implements OnInit, OnDestroy {
             this.headquartersService.fetch().subscribe(() => {
                 this.formLoaded = true;
                 loadingEl.dismiss();
+            }, error => {
+                loadingEl.dismiss();
+                this.alertController.create({
+                    header: 'An error ocurred!',
+                    message: 'Headquarters could not be fetched. Please try again later.',
+                    buttons: [
+                        {
+                            text: 'Okay', handler: () => {
+                                this.router.navigate(['admin/suppliers']);
+                            },
+                        },
+                    ],
+                }).then(alertEl => {
+                    alertEl.present();
+                });
             });
         });
     }
@@ -100,7 +108,7 @@ export class EditPage implements OnInit, OnDestroy {
         }
 
         this.loadingController.create({
-            message: 'Updating supplier...'
+            message: 'Updating supplier...',
         }).then(loadingEl => {
             loadingEl.present();
             this.suppliersService.edit(
@@ -111,6 +119,10 @@ export class EditPage implements OnInit, OnDestroy {
                 loadingEl.dismiss();
                 this.form.reset();
                 this.router.navigate(['/admin/suppliers']);
+            }, error => {
+                loadingEl.dismiss();
+
+                showAlert('Error updating supplier', supplierError(error));
             });
         });
     }
@@ -128,15 +140,25 @@ export class EditPage implements OnInit, OnDestroy {
                 {
                     text: 'Okay',
                     handler: () => {
-                        this.suppliersService.delete(
-                            this.supplier.id
-                        ).subscribe(() => {
-                            this.form.reset();
-                            this.router.navigate(['/admin/suppliers']);
+                        this.loadingController.create({
+                            message: 'Deleting supplier...',
+                        }).then(loadingEl => {
+                            loadingEl.present();
+                            this.suppliersService.delete(
+                                this.supplier.id,
+                            ).subscribe(() => {
+                                loadingEl.dismiss();
+                                this.form.reset();
+                                this.router.navigate(['/admin/suppliers']);
+                            }, error => {
+                                loadingEl.dismiss();
+
+                                showAlert('Deleting failed', 'Unexpected error. Please try again.');
+                            });
                         });
-                    }
-                }
-            ]
+                    },
+                },
+            ],
         }).then(loadingEl => {
             loadingEl.present();
         });

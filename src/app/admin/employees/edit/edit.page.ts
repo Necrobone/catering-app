@@ -45,21 +45,8 @@ export class EditPage implements OnInit, OnDestroy {
 
             this.roleSubscription = this.rolesService.roles.subscribe(roles => {
                 this.roles = roles;
-            }, error => {
-                this.alertController.create({
-                    header: 'An error ocurred!',
-                    message: 'Roles could not be fetched. Please try again later.',
-                    buttons: [
-                        {
-                            text: 'Okay', handler: () => {
-                                this.router.navigate(['admin/employees']);
-                            }
-                        }
-                    ]
-                }).then(alertEl => {
-                    alertEl.present();
-                });
             });
+
             this.employeeSubscription = this.employeesService.getEmployee(+paramMap.get('id')).subscribe(employee => {
                 this.employee = employee;
                 this.form = new FormGroup({

@@ -43,19 +43,8 @@ export class EditPage implements OnInit, OnDestroy {
 
             this.provinceSubscription = this.provincesService.provinces.subscribe(provinces => {
                 this.provinces = provinces;
-            }, error => {
-                this.alertController.create({
-                    header: 'An error ocurred!',
-                    message: 'Provinces could not be fetched. Please try again later.',
-                    buttons: [{
-                        text: 'Okay', handler: () => {
-                            this.router.navigate(['admin/headquarters']);
-                        }
-                    }]
-                }).then(alertEl => {
-                    alertEl.present();
-                });
             });
+
             this.headquarterSubscription = this.headquartersService.getHeadquarter(+paramMap.get('id')).subscribe(headquarter => {
                 this.headquarter = headquarter;
                 this.form = new FormGroup({
