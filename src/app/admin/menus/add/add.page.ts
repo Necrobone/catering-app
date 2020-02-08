@@ -1,13 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { LoadingController } from '@ionic/angular';
-import { MenusService } from '../menus.service';
-import { Event } from '../../events/event.model';
-import { Dish } from '../../dishes/dish.model';
+import { AlertController, LoadingController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
+import { showAlert } from '../../../app.component';
+import { Dish } from '../../dishes/dish.model';
 import { DishesService } from '../../dishes/dishes.service';
+import { Event } from '../../events/event.model';
 import { EventsService } from '../../events/events.service';
+import { menuError } from '../menus.page';
+import { MenusService } from '../menus.service';
 
 @Component({
     selector: 'app-add',
@@ -26,7 +28,8 @@ export class AddPage implements OnInit {
         private dishesService: DishesService,
         private eventsService: EventsService,
         private router: Router,
-        private loadingController: LoadingController
+        private loadingController: LoadingController,
+        private alertController: AlertController,
     ) {
     }
 
@@ -40,15 +43,15 @@ export class AddPage implements OnInit {
         this.form = new FormGroup({
             name: new FormControl(null, {
                 updateOn: 'blur',
-                validators: [Validators.required, Validators.maxLength(255)]
+                validators: [Validators.required, Validators.maxLength(255)],
             }),
             dishes: new FormControl(null, {
                 updateOn: 'blur',
-                validators: [Validators.required]
+                validators: [Validators.required],
             }),
             events: new FormControl(null, {
                 updateOn: 'blur',
-                validators: [Validators.required]
+                validators: [Validators.required],
             }),
         });
     }
@@ -61,6 +64,36 @@ export class AddPage implements OnInit {
             this.dishesService.fetch().subscribe(() => {
                 this.eventsService.fetch().subscribe(() => {
                     loadingEl.dismiss();
+                }, error => {
+                    loadingEl.dismiss();
+                    this.alertController.create({
+                        header: 'An error ocurred!',
+                        message: 'Events could not be fetched. Please try again later.',
+                        buttons: [
+                            {
+                                text: 'Okay', handler: () => {
+                                    this.router.navigate(['admin/menus']);
+                                },
+                            },
+                        ],
+                    }).then(alertEl => {
+                        alertEl.present();
+                    });
+                });
+            }, error => {
+                loadingEl.dismiss();
+                this.alertController.create({
+                    header: 'An error ocurred!',
+                    message: 'Dishes could not be fetched. Please try again later.',
+                    buttons: [
+                        {
+                            text: 'Okay', handler: () => {
+                                this.router.navigate(['admin/menus']);
+                            },
+                        },
+                    ],
+                }).then(alertEl => {
+                    alertEl.present();
                 });
             });
         });
@@ -71,17 +104,21 @@ export class AddPage implements OnInit {
             return;
         }
         this.loadingController.create({
-            message: 'Creating menu...'
+            message: 'Creating menu...',
         }).then(loadingEl => {
             loadingEl.present();
             this.menusService.add(
                 this.form.value.name,
                 this.form.value.dishes,
-                this.form.value.events
+                this.form.value.events,
             ).subscribe(() => {
                 loadingEl.dismiss();
                 this.form.reset();
                 this.router.navigate(['/admin/menus']);
+            }, error => {
+                loadingEl.dismiss();
+
+                showAlert('Error creating menu', menuError(error));
             });
         });
     }

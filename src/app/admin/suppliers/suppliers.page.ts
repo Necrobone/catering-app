@@ -92,7 +92,7 @@ export const supplierError = (error: any) => {
             message = 'Headquarters can not be empty';
             break;
         case 'HEADQUARTERS_INVALID':
-            message = 'Headquarters is invalid';
+            message = 'Headquarters are invalid';
             break;
         case 'HEADQUARTERS_NOT_FOUND':
             message = 'Headquarters not found';

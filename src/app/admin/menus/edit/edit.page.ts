@@ -1,14 +1,16 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController, LoadingController, NavController } from '@ionic/angular';
-import { Menu } from '../menu.model';
-import { MenusService } from '../menus.service';
-import { Event } from '../../events/event.model';
+import { Subscription } from 'rxjs';
+import { showAlert } from '../../../app.component';
 import { Dish } from '../../dishes/dish.model';
-import { EventsService } from '../../events/events.service';
 import { DishesService } from '../../dishes/dishes.service';
+import { Event } from '../../events/event.model';
+import { EventsService } from '../../events/events.service';
+import { Menu } from '../menu.model';
+import { menuError } from '../menus.page';
+import { MenusService } from '../menus.service';
 
 @Component({
     selector: 'app-edit',
@@ -46,34 +48,10 @@ export class EditPage implements OnInit, OnDestroy {
 
             this.dishSubscription = this.dishesService.dishes.subscribe(dishes => {
                 this.dishes = dishes;
-            }, error => {
-                this.alertController.create({
-                    header: 'An error ocurred!',
-                    message: 'Dishes could not be fetched. Please try again later.',
-                    buttons: [{
-                        text: 'Okay', handler: () => {
-                            this.router.navigate(['admin/dishes']);
-                        }
-                    }]
-                }).then(alertEl => {
-                    alertEl.present();
-                });
             });
 
             this.eventSubscription = this.eventsService.events.subscribe(events => {
                 this.events = events;
-            }, error => {
-                this.alertController.create({
-                    header: 'An error ocurred!',
-                    message: 'Events could not be fetched. Please try again later.',
-                    buttons: [{
-                        text: 'Okay', handler: () => {
-                            this.router.navigate(['admin/suppliers']);
-                        }
-                    }]
-                }).then(alertEl => {
-                    alertEl.present();
-                });
             });
 
             this.subscription = this.menusService.getMenu(+paramMap.get('id')).subscribe(menu => {
@@ -81,26 +59,28 @@ export class EditPage implements OnInit, OnDestroy {
                 this.form = new FormGroup({
                     name: new FormControl(this.menu.name, {
                         updateOn: 'blur',
-                        validators: [Validators.required, Validators.maxLength(255)]
+                        validators: [Validators.required, Validators.maxLength(255)],
                     }),
                     dishes: new FormControl(this.menu.dishesIds, {
                         updateOn: 'blur',
-                        validators: [Validators.required]
+                        validators: [Validators.required],
                     }),
                     events: new FormControl(this.menu.eventsIds, {
                         updateOn: 'blur',
-                        validators: [Validators.required]
+                        validators: [Validators.required],
                     }),
                 });
             }, error => {
                 this.alertController.create({
                     header: 'An error ocurred!',
                     message: 'Menu could not be fetched. Please try again later.',
-                    buttons: [{
-                        text: 'Okay', handler: () => {
-                            this.router.navigate(['admin/menus']);
-                        }
-                    }]
+                    buttons: [
+                        {
+                            text: 'Okay', handler: () => {
+                                this.router.navigate(['admin/menus']);
+                            },
+                        },
+                    ],
                 }).then(alertEl => {
                     alertEl.present();
                 });
@@ -117,6 +97,36 @@ export class EditPage implements OnInit, OnDestroy {
                 this.eventsService.fetch().subscribe(() => {
                     this.formLoaded = true;
                     loadingEl.dismiss();
+                }, error => {
+                    loadingEl.dismiss();
+                    this.alertController.create({
+                        header: 'An error ocurred!',
+                        message: 'Events could not be fetched. Please try again later.',
+                        buttons: [
+                            {
+                                text: 'Okay', handler: () => {
+                                    this.router.navigate(['admin/menus']);
+                                },
+                            },
+                        ],
+                    }).then(alertEl => {
+                        alertEl.present();
+                    });
+                });
+            }, error => {
+                loadingEl.dismiss();
+                this.alertController.create({
+                    header: 'An error ocurred!',
+                    message: 'Dishes could not be fetched. Please try again later.',
+                    buttons: [
+                        {
+                            text: 'Okay', handler: () => {
+                                this.router.navigate(['admin/menus']);
+                            },
+                        },
+                    ],
+                }).then(alertEl => {
+                    alertEl.present();
                 });
             });
         });
@@ -128,18 +138,22 @@ export class EditPage implements OnInit, OnDestroy {
         }
 
         this.loadingController.create({
-            message: 'Updating menu...'
+            message: 'Updating menu...',
         }).then(loadingEl => {
             loadingEl.present();
             this.menusService.edit(
                 this.menu.id,
                 this.form.value.name,
                 this.form.value.dishes,
-                this.form.value.events
+                this.form.value.events,
             ).subscribe(() => {
                 loadingEl.dismiss();
                 this.form.reset();
                 this.router.navigate(['/admin/menus']);
+            }, error => {
+                loadingEl.dismiss();
+
+                showAlert('Error updating menu', menuError(error));
             });
         });
     }
@@ -157,15 +171,25 @@ export class EditPage implements OnInit, OnDestroy {
                 {
                     text: 'Okay',
                     handler: () => {
-                        this.menusService.delete(
-                            this.menu.id
-                        ).subscribe(() => {
-                            this.form.reset();
-                            this.router.navigate(['/admin/menus']);
+                        this.loadingController.create({
+                            message: 'Deleting menu...',
+                        }).then(loadingEl => {
+                            loadingEl.present();
+                            this.menusService.delete(
+                                this.menu.id,
+                            ).subscribe(() => {
+                                loadingEl.dismiss();
+                                this.form.reset();
+                                this.router.navigate(['/admin/menus']);
+                            }, error => {
+                                loadingEl.dismiss();
+
+                                showAlert('Deleting failed', 'Unexpected error. Please try again.');
+                            });
                         });
-                    }
-                }
-            ]
+                    },
+                },
+            ],
         }).then(loadingEl => {
             loadingEl.present();
         });
