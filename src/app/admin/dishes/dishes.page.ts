@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { IonInfiniteScroll, LoadingController } from '@ionic/angular';
-import { Dish } from './dish.model';
+import { Router } from '@angular/router';
+import { AlertController, IonInfiniteScroll, LoadingController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
+import { Dish } from './dish.model';
 import { DishesService } from './dishes.service';
 
 @Component({
@@ -14,7 +15,12 @@ export class DishesPage implements OnInit {
     dishes: Dish[];
     private subscription: Subscription;
 
-    constructor(private dishesService: DishesService, private loadingController: LoadingController) {
+    constructor(
+        private dishesService: DishesService,
+        private loadingController: LoadingController,
+        private alertController: AlertController,
+        private router: Router,
+    ) {
         this.dishes = [];
     }
 
@@ -31,6 +37,21 @@ export class DishesPage implements OnInit {
             loadingEl.present();
             this.dishesService.fetch().subscribe(() => {
                 loadingEl.dismiss();
+            }, error => {
+                loadingEl.dismiss();
+                this.alertController.create({
+                    header: 'An error ocurred!',
+                    message: 'Dishes could not be fetched. Please try again later.',
+                    buttons: [
+                        {
+                            text: 'Okay', handler: () => {
+                                this.router.navigate(['admin']);
+                            }
+                        }
+                    ]
+                }).then(alertEl => {
+                    alertEl.present();
+                });
             });
         });
     }
@@ -38,12 +59,74 @@ export class DishesPage implements OnInit {
     doRefresh(event) {
         this.dishesService.fetch().subscribe(() => {
             event.target.complete();
-        });
-    }
-
-    loadData(event) {
-        this.dishesService.fetch().subscribe(() => {
+        }, error => {
             event.target.complete();
+            this.alertController.create({
+                header: 'An error ocurred!',
+                message: 'Dishes could not be fetched. Please try again later.',
+                buttons: [
+                    {
+                        text: 'Okay', handler: () => {
+                            this.router.navigate(['admin']);
+                        }
+                    }
+                ]
+            }).then(alertEl => {
+                alertEl.present();
+            });
         });
     }
 }
+
+export const dishError = (error: any) => {
+    let message;
+    switch (error.error.error) {
+        case 'NAME_REQUIRED':
+            message = 'Name can not be empty';
+            break;
+        case 'NAME_INVALID':
+            message = 'Name is invalid';
+            break;
+        case 'NAME_TOO_LONG':
+            message = 'Name is too long';
+            break;
+        case 'DESCRIPTION_REQUIRED':
+            message = 'Description can not be empty';
+            break;
+        case 'DESCRIPTION_INVALID':
+            message = 'Description is invalid';
+            break;
+        case 'DESCRIPTION_TOO_LONG':
+            message = 'Description is too long';
+            break;
+        case 'IMAGE_REQUIRED':
+            message = 'Image can not be empty';
+            break;
+        case 'IMAGE_INVALID':
+            message = 'Image is invalid';
+            break;
+        case 'SUPPLIERS_REQUIRED':
+            message = 'Suppliers can not be empty';
+            break;
+        case 'SUPPLIERS_INVALID':
+            message = 'Suppliers are invalid';
+            break;
+        case 'SUPPLIERS_NOT_FOUND':
+            message = 'Suppliers not found';
+            break;
+        case 'EVENTS_REQUIRED':
+            message = 'Events can not be empty';
+            break;
+        case 'EVENTS_INVALID':
+            message = 'Events are invalid';
+            break;
+        case 'EVENTS_NOT_FOUND':
+            message = 'Events not found';
+            break;
+        default:
+            message = 'Unexpected error. Please try again.';
+            break;
+    }
+
+    return message;
+};

@@ -1,14 +1,16 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController, LoadingController, NavController } from '@ionic/angular';
-import { Dish } from '../dish.model';
-import { DishesService } from '../dishes.service';
-import { Supplier } from '../../suppliers/supplier.model';
+import { Subscription } from 'rxjs';
+import { showAlert } from '../../../app.component';
 import { Event } from '../../events/event.model';
-import { SuppliersService } from '../../suppliers/suppliers.service';
 import { EventsService } from '../../events/events.service';
+import { Supplier } from '../../suppliers/supplier.model';
+import { SuppliersService } from '../../suppliers/suppliers.service';
+import { Dish } from '../dish.model';
+import { dishError } from '../dishes.page';
+import { DishesService } from '../dishes.service';
 
 @Component({
     selector: 'app-edit',
@@ -46,34 +48,10 @@ export class EditPage implements OnInit, OnDestroy {
 
             this.supplierSubscription = this.suppliersService.suppliers.subscribe(suppliers => {
                 this.suppliers = suppliers;
-            }, error => {
-                this.alertController.create({
-                    header: 'An error ocurred!',
-                    message: 'Suppliers could not be fetched. Please try again later.',
-                    buttons: [{
-                        text: 'Okay', handler: () => {
-                            this.router.navigate(['admin/dishes']);
-                        }
-                    }]
-                }).then(alertEl => {
-                    alertEl.present();
-                });
             });
 
             this.eventSubscription = this.eventsService.events.subscribe(events => {
                 this.events = events;
-            }, error => {
-                this.alertController.create({
-                    header: 'An error ocurred!',
-                    message: 'Events could not be fetched. Please try again later.',
-                    buttons: [{
-                        text: 'Okay', handler: () => {
-                            this.router.navigate(['admin/suppliers']);
-                        }
-                    }]
-                }).then(alertEl => {
-                    alertEl.present();
-                });
             });
 
             this.subscription = this.dishesService.getDish(+paramMap.get('id')).subscribe(dish => {
@@ -81,19 +59,19 @@ export class EditPage implements OnInit, OnDestroy {
                 this.form = new FormGroup({
                     name: new FormControl(this.dish.name, {
                         updateOn: 'blur',
-                        validators: [Validators.required, Validators.maxLength(255)]
+                        validators: [Validators.required, Validators.maxLength(255)],
                     }),
                     description: new FormControl(this.dish.description, {
                         updateOn: 'blur',
-                        validators: [Validators.required, Validators.maxLength(65535)]
+                        validators: [Validators.required, Validators.maxLength(65535)],
                     }),
                     suppliers: new FormControl(this.dish.suppliersIds, {
                         updateOn: 'blur',
-                        validators: [Validators.required]
+                        validators: [Validators.required],
                     }),
                     events: new FormControl(this.dish.eventsIds, {
                         updateOn: 'blur',
-                        validators: [Validators.required]
+                        validators: [Validators.required],
                     }),
                     image: new FormControl(this.dish.image),
                 });
@@ -101,11 +79,13 @@ export class EditPage implements OnInit, OnDestroy {
                 this.alertController.create({
                     header: 'An error ocurred!',
                     message: 'Dish could not be fetched. Please try again later.',
-                    buttons: [{
-                        text: 'Okay', handler: () => {
-                            this.router.navigate(['admin/dishes']);
-                        }
-                    }]
+                    buttons: [
+                        {
+                            text: 'Okay', handler: () => {
+                                this.router.navigate(['admin/dishes']);
+                            },
+                        },
+                    ],
                 }).then(alertEl => {
                     alertEl.present();
                 });
@@ -122,6 +102,36 @@ export class EditPage implements OnInit, OnDestroy {
                 this.eventsService.fetch().subscribe(() => {
                     this.formLoaded = true;
                     loadingEl.dismiss();
+                }, error => {
+                    loadingEl.dismiss();
+                    this.alertController.create({
+                        header: 'An error ocurred!',
+                        message: 'Events could not be fetched. Please try again later.',
+                        buttons: [
+                            {
+                                text: 'Okay', handler: () => {
+                                    this.router.navigate(['admin/headquarters']);
+                                },
+                            },
+                        ],
+                    }).then(alertEl => {
+                        alertEl.present();
+                    });
+                });
+            }, error => {
+                loadingEl.dismiss();
+                this.alertController.create({
+                    header: 'An error ocurred!',
+                    message: 'Suppliers could not be fetched. Please try again later.',
+                    buttons: [
+                        {
+                            text: 'Okay', handler: () => {
+                                this.router.navigate(['admin/headquarters']);
+                            },
+                        },
+                    ],
+                }).then(alertEl => {
+                    alertEl.present();
                 });
             });
         });
@@ -137,7 +147,7 @@ export class EditPage implements OnInit, OnDestroy {
         }
 
         this.loadingController.create({
-            message: 'Updating dish...'
+            message: 'Updating dish...',
         }).then(loadingEl => {
             loadingEl.present();
             this.dishesService.edit(
@@ -146,11 +156,15 @@ export class EditPage implements OnInit, OnDestroy {
                 this.form.value.description,
                 this.form.value.image,
                 this.form.value.suppliers,
-                this.form.value.events
+                this.form.value.events,
             ).subscribe(() => {
                 loadingEl.dismiss();
                 this.form.reset();
                 this.router.navigate(['/admin/dishes']);
+            }, error => {
+                loadingEl.dismiss();
+
+                showAlert('Error updating dish', dishError(error));
             });
         });
     }
@@ -168,15 +182,25 @@ export class EditPage implements OnInit, OnDestroy {
                 {
                     text: 'Okay',
                     handler: () => {
-                        this.dishesService.delete(
-                            this.dish.id
-                        ).subscribe(() => {
-                            this.form.reset();
-                            this.router.navigate(['/admin/dishes']);
+                        this.loadingController.create({
+                            message: 'Deleting dish...',
+                        }).then(loadingEl => {
+                            loadingEl.present();
+                            this.dishesService.delete(
+                                this.dish.id,
+                            ).subscribe(() => {
+                                loadingEl.dismiss();
+                                this.form.reset();
+                                this.router.navigate(['/admin/dishes']);
+                            }, error => {
+                                loadingEl.dismiss();
+
+                                showAlert('Deleting failed', 'Unexpected error. Please try again.');
+                            });
                         });
-                    }
-                }
-            ]
+                    },
+                },
+            ],
         }).then(loadingEl => {
             loadingEl.present();
         });

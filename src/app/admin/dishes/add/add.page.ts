@@ -1,13 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { LoadingController } from '@ionic/angular';
-import { DishesService } from '../dishes.service';
-import { Supplier } from '../../suppliers/supplier.model';
-import { Event } from '../../events/event.model';
+import { AlertController, LoadingController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
-import { SuppliersService } from '../../suppliers/suppliers.service';
+import { showAlert } from '../../../app.component';
+import { Event } from '../../events/event.model';
 import { EventsService } from '../../events/events.service';
+import { Supplier } from '../../suppliers/supplier.model';
+import { SuppliersService } from '../../suppliers/suppliers.service';
+import { dishError } from '../dishes.page';
+import { DishesService } from '../dishes.service';
 
 @Component({
     selector: 'app-add',
@@ -26,7 +28,8 @@ export class AddPage implements OnInit {
         private suppliersService: SuppliersService,
         private eventsService: EventsService,
         private router: Router,
-        private loadingController: LoadingController
+        private loadingController: LoadingController,
+        private alertController: AlertController,
     ) {
     }
 
@@ -40,23 +43,23 @@ export class AddPage implements OnInit {
         this.form = new FormGroup({
             name: new FormControl(null, {
                 updateOn: 'blur',
-                validators: [Validators.required, Validators.maxLength(255)]
+                validators: [Validators.required, Validators.maxLength(255)],
             }),
             description: new FormControl(null, {
                 updateOn: 'blur',
-                validators: [Validators.required, Validators.maxLength(65535)]
+                validators: [Validators.required, Validators.maxLength(65535)],
             }),
             suppliers: new FormControl(null, {
                 updateOn: 'blur',
-                validators: [Validators.required]
+                validators: [Validators.required],
             }),
             events: new FormControl(null, {
                 updateOn: 'blur',
-                validators: [Validators.required]
+                validators: [Validators.required],
             }),
             image: new FormControl(null, {
                 updateOn: 'blur',
-                validators: [Validators.required]
+                validators: [Validators.required],
             }),
         });
     }
@@ -69,6 +72,36 @@ export class AddPage implements OnInit {
             this.suppliersService.fetch().subscribe(() => {
                 this.eventsService.fetch().subscribe(() => {
                     loadingEl.dismiss();
+                }, error => {
+                    loadingEl.dismiss();
+                    this.alertController.create({
+                        header: 'An error ocurred!',
+                        message: 'Events could not be fetched. Please try again later.',
+                        buttons: [
+                            {
+                                text: 'Okay', handler: () => {
+                                    this.router.navigate(['admin/headquarters']);
+                                },
+                            },
+                        ],
+                    }).then(alertEl => {
+                        alertEl.present();
+                    });
+                });
+            }, error => {
+                loadingEl.dismiss();
+                this.alertController.create({
+                    header: 'An error ocurred!',
+                    message: 'Suppliers could not be fetched. Please try again later.',
+                    buttons: [
+                        {
+                            text: 'Okay', handler: () => {
+                                this.router.navigate(['admin/headquarters']);
+                            },
+                        },
+                    ],
+                }).then(alertEl => {
+                    alertEl.present();
                 });
             });
         });
@@ -83,7 +116,7 @@ export class AddPage implements OnInit {
             return;
         }
         this.loadingController.create({
-            message: 'Creating dish...'
+            message: 'Creating dish...',
         }).then(loadingEl => {
             loadingEl.present();
             this.dishesService.add(
@@ -91,11 +124,15 @@ export class AddPage implements OnInit {
                 this.form.value.description,
                 this.form.value.image,
                 this.form.value.suppliers,
-                this.form.value.events
+                this.form.value.events,
             ).subscribe(() => {
                 loadingEl.dismiss();
                 this.form.reset();
                 this.router.navigate(['/admin/dishes']);
+            }, error => {
+                loadingEl.dismiss();
+
+                showAlert('Error creating dish', dishError(error));
             });
         });
     }
