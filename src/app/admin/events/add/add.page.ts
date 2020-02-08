@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LoadingController } from '@ionic/angular';
+import { showAlert } from '../../../app.component';
+import { eventError } from '../events.page';
 import { EventsService } from '../events.service';
 
 @Component({
@@ -15,7 +17,7 @@ export class AddPage implements OnInit {
     constructor(
         private eventsService: EventsService,
         private router: Router,
-        private loadingController: LoadingController
+        private loadingController: LoadingController,
     ) {
     }
 
@@ -23,7 +25,7 @@ export class AddPage implements OnInit {
         this.form = new FormGroup({
             name: new FormControl(null, {
                 updateOn: 'blur',
-                validators: [Validators.required, Validators.maxLength(255)]
+                validators: [Validators.required, Validators.maxLength(255)],
             }),
         });
     }
@@ -33,13 +35,17 @@ export class AddPage implements OnInit {
             return;
         }
         this.loadingController.create({
-            message: 'Creating event...'
+            message: 'Creating event...',
         }).then(loadingEl => {
             loadingEl.present();
             this.eventsService.add(this.form.value.name).subscribe(() => {
                 loadingEl.dismiss();
                 this.form.reset();
                 this.router.navigate(['/admin/events']);
+            }, error => {
+                loadingEl.dismiss();
+
+                showAlert('Error creating event', eventError(error));
             });
         });
     }

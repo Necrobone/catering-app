@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { IonInfiniteScroll, LoadingController } from '@ionic/angular';
-import { Event } from './event.model';
+import { Router } from '@angular/router';
+import { AlertController, IonInfiniteScroll, LoadingController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
+import { Event } from './event.model';
 import { EventsService } from './events.service';
 
 @Component({
@@ -11,11 +12,15 @@ import { EventsService } from './events.service';
 })
 export class EventsPage implements OnInit {
     @ViewChild(IonInfiniteScroll, {read: undefined, static: false}) infiniteScroll: IonInfiniteScroll;
-    events: Event[];
+    events: Event[] = [];
     private subscription: Subscription;
 
-    constructor(private eventsService: EventsService, private loadingController: LoadingController) {
-        this.events = [];
+    constructor(
+        private eventsService: EventsService,
+        private loadingController: LoadingController,
+        private alertController: AlertController,
+        private router: Router,
+    ) {
     }
 
     ngOnInit() {
@@ -31,6 +36,21 @@ export class EventsPage implements OnInit {
             loadingEl.present();
             this.eventsService.fetch().subscribe(() => {
                 loadingEl.dismiss();
+            }, error => {
+                loadingEl.dismiss();
+                this.alertController.create({
+                    header: 'An error ocurred!',
+                    message: 'Events could not be fetched. Please try again later.',
+                    buttons: [
+                        {
+                            text: 'Okay', handler: () => {
+                                this.router.navigate(['admin']);
+                            },
+                        },
+                    ],
+                }).then(alertEl => {
+                    alertEl.present();
+                });
             });
         });
     }
@@ -38,12 +58,41 @@ export class EventsPage implements OnInit {
     doRefresh(event) {
         this.eventsService.fetch().subscribe(() => {
             event.target.complete();
-        });
-    }
-
-    loadData(event) {
-        this.eventsService.fetch().subscribe(() => {
+        }, error => {
             event.target.complete();
+            this.alertController.create({
+                header: 'An error ocurred!',
+                message: 'Events could not be fetched. Please try again later.',
+                buttons: [
+                    {
+                        text: 'Okay', handler: () => {
+                            this.router.navigate(['admin']);
+                        },
+                    },
+                ],
+            }).then(alertEl => {
+                alertEl.present();
+            });
         });
     }
 }
+
+export const eventError = (error: any) => {
+    let message;
+    switch (error.error.error) {
+        case 'NAME_REQUIRED':
+            message = 'Name can not be empty';
+            break;
+        case 'NAME_INVALID':
+            message = 'Name is invalid';
+            break;
+        case 'NAME_TOO_LONG':
+            message = 'Name is too long';
+            break;
+        default:
+            message = 'Unexpected error. Please try again.';
+            break;
+    }
+
+    return message;
+};

@@ -1,9 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController, LoadingController, NavController } from '@ionic/angular';
+import { Subscription } from 'rxjs';
+import { showAlert } from '../../../app.component';
 import { Event } from '../event.model';
+import { eventError } from '../events.page';
 import { EventsService } from '../events.service';
 
 @Component({
@@ -38,18 +40,20 @@ export class EditPage implements OnInit, OnDestroy {
                 this.form = new FormGroup({
                     name: new FormControl(this.event.name, {
                         updateOn: 'blur',
-                        validators: [Validators.required, Validators.maxLength(255)]
+                        validators: [Validators.required, Validators.maxLength(255)],
                     }),
                 });
             }, error => {
                 this.alertController.create({
                     header: 'An error ocurred!',
                     message: 'Event could not be fetched. Please try again later.',
-                    buttons: [{
-                        text: 'Okay', handler: () => {
-                            this.router.navigate(['admin/events']);
-                        }
-                    }]
+                    buttons: [
+                        {
+                            text: 'Okay', handler: () => {
+                                this.router.navigate(['admin/events']);
+                            },
+                        },
+                    ],
                 }).then(alertEl => {
                     alertEl.present();
                 });
@@ -63,7 +67,7 @@ export class EditPage implements OnInit, OnDestroy {
         }
 
         this.loadingController.create({
-            message: 'Updating event...'
+            message: 'Updating event...',
         }).then(loadingEl => {
             loadingEl.present();
             this.eventsService.edit(
@@ -73,6 +77,10 @@ export class EditPage implements OnInit, OnDestroy {
                 loadingEl.dismiss();
                 this.form.reset();
                 this.router.navigate(['/admin/events']);
+            }, error => {
+                loadingEl.dismiss();
+
+                showAlert('Error updating event', eventError(error));
             });
         });
     }
@@ -90,15 +98,25 @@ export class EditPage implements OnInit, OnDestroy {
                 {
                     text: 'Okay',
                     handler: () => {
-                        this.eventsService.delete(
-                            this.event.id
-                        ).subscribe(() => {
-                            this.form.reset();
-                            this.router.navigate(['/admin/events']);
+                        this.loadingController.create({
+                            message: 'Deleting event...',
+                        }).then(loadingEl => {
+                            loadingEl.present();
+                            this.eventsService.delete(
+                                this.event.id,
+                            ).subscribe(() => {
+                                loadingEl.dismiss();
+                                this.form.reset();
+                                this.router.navigate(['/admin/events']);
+                            }, error => {
+                                loadingEl.dismiss();
+
+                                showAlert('Deleting failed', 'Unexpected error. Please try again.');
+                            });
                         });
-                    }
-                }
-            ]
+                    },
+                },
+            ],
         }).then(loadingEl => {
             loadingEl.present();
         });

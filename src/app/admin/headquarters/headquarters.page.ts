@@ -18,7 +18,7 @@ export class HeadquartersPage implements OnInit {
         private headquartersService: HeadquartersService,
         private loadingController: LoadingController,
         private alertController: AlertController,
-        private router: Router
+        private router: Router,
     ) {
     }
 
@@ -40,11 +40,13 @@ export class HeadquartersPage implements OnInit {
                 this.alertController.create({
                     header: 'An error ocurred!',
                     message: 'Headquarters could not be fetched. Please try again later.',
-                    buttons: [{
-                        text: 'Okay', handler: () => {
-                            this.router.navigate(['admin']);
-                        }
-                    }]
+                    buttons: [
+                        {
+                            text: 'Okay', handler: () => {
+                                this.router.navigate(['admin']);
+                            },
+                        },
+                    ],
                 }).then(alertEl => {
                     alertEl.present();
                 });
@@ -60,11 +62,13 @@ export class HeadquartersPage implements OnInit {
             this.alertController.create({
                 header: 'An error ocurred!',
                 message: 'Headquarters could not be fetched. Please try again later.',
-                buttons: [{
-                    text: 'Okay', handler: () => {
-                        this.router.navigate(['admin']);
-                    }
-                }]
+                buttons: [
+                    {
+                        text: 'Okay', handler: () => {
+                            this.router.navigate(['admin']);
+                        },
+                    },
+                ],
             }).then(alertEl => {
                 alertEl.present();
             });
