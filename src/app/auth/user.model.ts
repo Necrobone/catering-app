@@ -1,5 +1,4 @@
 import { Role } from './role.model';
-import { Service } from '../admin/services/service.model';
 
 export class User {
     constructor(
@@ -9,7 +8,6 @@ export class User {
         public email: string,
         public apiToken: string,
         public role: Role,
-        public services: Service[],
         private tokenExpirationDate: Date,
     ) {}
 

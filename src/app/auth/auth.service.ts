@@ -5,7 +5,6 @@ import { User } from './user.model';
 import { map, tap } from 'rxjs/operators';
 import { Plugins } from '@capacitor/core';
 import { Role } from './role.model';
-import { Service } from '../admin/services/service.model';
 
 export const ADMINISTRATOR = 1;
 export const EMPLOYEE = 2;
@@ -29,9 +28,8 @@ export class AuthService implements OnDestroy {
         firstName: string,
         lastName: string,
         role: Role,
-        services: Service[]
     ) {
-        const data = JSON.stringify({userId, token, tokenExpirationDate, email, firstName, lastName, role, services});
+        const data = JSON.stringify({userId, token, tokenExpirationDate, email, firstName, lastName, role});
         Plugins.Storage.set({key: 'authData', value: data});
     }
 
@@ -126,7 +124,6 @@ export class AuthService implements OnDestroy {
                     firstName: string,
                     lastName: string,
                     role: Role,
-                    services: Service[],
                 };
                 const expirationTime = new Date(parsedData.tokenExpirationDate);
                 if (expirationTime <= new Date()) {
@@ -140,7 +137,6 @@ export class AuthService implements OnDestroy {
                     parsedData.email,
                     parsedData.token,
                     parsedData.role,
-                    parsedData.services,
                     expirationTime
                 );
             }),
@@ -208,7 +204,6 @@ export class AuthService implements OnDestroy {
             userData.email,
             userData.apiToken,
             userData.role,
-            userData.services,
             expirationTime
         );
         this._user.next(user);
@@ -221,7 +216,6 @@ export class AuthService implements OnDestroy {
             userData.firstName,
             userData.lastName,
             userData.role,
-            userData.services,
         );
     }
 
