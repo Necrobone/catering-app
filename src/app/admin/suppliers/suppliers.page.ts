@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, IonInfiniteScroll, LoadingController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
@@ -10,7 +10,7 @@ import { SuppliersService } from './suppliers.service';
     templateUrl: './suppliers.page.html',
     styleUrls: ['./suppliers.page.scss'],
 })
-export class SuppliersPage implements OnInit {
+export class SuppliersPage implements OnInit, OnDestroy {
     @ViewChild(IonInfiniteScroll, {read: undefined, static: false}) infiniteScroll: IonInfiniteScroll;
     suppliers: Supplier[];
     private subscription: Subscription;
@@ -73,6 +73,12 @@ export class SuppliersPage implements OnInit {
                 alertEl.present();
             });
         });
+    }
+
+    ngOnDestroy(): void {
+        if (this.subscription) {
+            this.subscription.unsubscribe();
+        }
     }
 }
 

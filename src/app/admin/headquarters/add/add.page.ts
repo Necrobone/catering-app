@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertController, LoadingController } from '@ionic/angular';
@@ -14,7 +14,7 @@ import { HeadquartersService } from '../headquarters.service';
     templateUrl: './add.page.html',
     styleUrls: ['./add.page.scss'],
 })
-export class AddPage implements OnInit {
+export class AddPage implements OnInit, OnDestroy {
     form: FormGroup;
     provinces: Province[];
     private subscription: Subscription;
@@ -104,5 +104,11 @@ export class AddPage implements OnInit {
                 showAlert('Error creating headquarter', headquarterError(error));
             });
         });
+    }
+
+    ngOnDestroy(): void {
+        if (this.subscription) {
+            this.subscription.unsubscribe();
+        }
     }
 }

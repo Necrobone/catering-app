@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, IonInfiniteScroll, LoadingController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
@@ -10,7 +10,7 @@ import { DishesService } from './dishes.service';
     templateUrl: './dishes.page.html',
     styleUrls: ['./dishes.page.scss'],
 })
-export class DishesPage implements OnInit {
+export class DishesPage implements OnInit, OnDestroy {
     @ViewChild(IonInfiniteScroll, {read: undefined, static: false}) infiniteScroll: IonInfiniteScroll;
     dishes: Dish[];
     private subscription: Subscription;
@@ -75,6 +75,12 @@ export class DishesPage implements OnInit {
                 alertEl.present();
             });
         });
+    }
+
+    ngOnDestroy(): void {
+        if (this.subscription) {
+            this.subscription.unsubscribe();
+        }
     }
 }
 

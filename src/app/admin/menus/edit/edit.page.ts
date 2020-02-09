@@ -199,5 +199,13 @@ export class EditPage implements OnInit, OnDestroy {
         if (this.subscription) {
             this.subscription.unsubscribe();
         }
+
+        if (this.dishSubscription) {
+            this.dishSubscription.unsubscribe();
+        }
+
+        if (this.eventSubscription) {
+            this.eventSubscription.unsubscribe();
+        }
     }
 }

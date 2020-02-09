@@ -48,11 +48,13 @@ export class EditPage implements OnInit, OnDestroy {
                 this.alertController.create({
                     header: 'An error ocurred!',
                     message: 'Service could not be fetched. Please try again later.',
-                    buttons: [{
-                        text: 'Okay', handler: () => {
-                            this.router.navigate(['employee/services']);
-                        }
-                    }]
+                    buttons: [
+                        {
+                            text: 'Okay', handler: () => {
+                                this.router.navigate(['employee/services']);
+                            },
+                        },
+                    ],
                 }).then(alertEl => {
                     alertEl.present();
                 });
@@ -69,12 +71,20 @@ export class EditPage implements OnInit, OnDestroy {
     doRefresh(event) {
         this.servicesService.getService(this.service.id).subscribe(() => {
             event.target.complete();
-        });
-    }
-
-    loadData(event) {
-        this.servicesService.getService(this.service.id).subscribe(() => {
-            event.target.complete();
+        }, error => {
+            this.alertController.create({
+                header: 'An error ocurred!',
+                message: 'Service could not be fetched. Please try again later.',
+                buttons: [
+                    {
+                        text: 'Okay', handler: () => {
+                            this.router.navigate(['employee/services']);
+                        },
+                    },
+                ],
+            }).then(alertEl => {
+                alertEl.present();
+            });
         });
     }
 

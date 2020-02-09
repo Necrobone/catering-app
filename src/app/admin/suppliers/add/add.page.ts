@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertController, LoadingController } from '@ionic/angular';
@@ -14,7 +14,7 @@ import { SuppliersService } from '../suppliers.service';
     templateUrl: './add.page.html',
     styleUrls: ['./add.page.scss'],
 })
-export class AddPage implements OnInit {
+export class AddPage implements OnInit, OnDestroy {
     form: FormGroup;
     headquarters: Headquarter[];
     private subscription: Subscription;
@@ -88,5 +88,11 @@ export class AddPage implements OnInit {
                 showAlert('Error creating supplier', supplierError(error));
             });
         });
+    }
+
+    ngOnDestroy(): void {
+        if (this.subscription) {
+            this.subscription.unsubscribe();
+        }
     }
 }

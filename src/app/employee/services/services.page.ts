@@ -1,16 +1,17 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { IonInfiniteScroll, LoadingController } from '@ionic/angular';
-import { Subscription } from 'rxjs';
-import { ServicesService } from './services.service';
-import { Service } from '../../admin/services/service.model';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
+import { AlertController, IonInfiniteScroll, LoadingController } from '@ionic/angular';
 import { SegmentChangeEventDetail } from '@ionic/core';
+import { Subscription } from 'rxjs';
+import { Service } from '../../admin/services/service.model';
+import { ServicesService } from './services.service';
 
 @Component({
     selector: 'app-services',
     templateUrl: './services.page.html',
     styleUrls: ['./services.page.scss'],
 })
-export class ServicesPage implements OnInit {
+export class ServicesPage implements OnInit, OnDestroy {
     @ViewChild(IonInfiniteScroll, {read: undefined, static: false}) infiniteScroll: IonInfiniteScroll;
     services: Service[];
     filteredServices: Service[];
@@ -19,7 +20,9 @@ export class ServicesPage implements OnInit {
 
     constructor(
         private servicesService: ServicesService,
-        private loadingController: LoadingController
+        private loadingController: LoadingController,
+        private alertController: AlertController,
+        private router: Router,
     ) {
     }
 
@@ -48,6 +51,21 @@ export class ServicesPage implements OnInit {
             loadingEl.present();
             this.servicesService.fetch().subscribe(() => {
                 loadingEl.dismiss();
+            }, error => {
+                loadingEl.dismiss();
+                this.alertController.create({
+                    header: 'An error ocurred!',
+                    message: 'Services could not be fetched. Please try again later.',
+                    buttons: [
+                        {
+                            text: 'Okay', handler: () => {
+                                this.router.navigate(['employee']);
+                            }
+                        }
+                    ]
+                }).then(alertEl => {
+                    alertEl.present();
+                });
             });
         });
     }
@@ -55,12 +73,21 @@ export class ServicesPage implements OnInit {
     doRefresh(event) {
         this.servicesService.fetch().subscribe(() => {
             event.target.complete();
-        });
-    }
-
-    loadData(event) {
-        this.servicesService.fetch().subscribe(() => {
+        }, error => {
             event.target.complete();
+            this.alertController.create({
+                header: 'An error ocurred!',
+                message: 'Services could not be fetched. Please try again later.',
+                buttons: [
+                    {
+                        text: 'Okay', handler: () => {
+                            this.router.navigate(['employee']);
+                        },
+                    },
+                ],
+            }).then(alertEl => {
+                alertEl.present();
+            });
         });
     }
 
@@ -79,6 +106,12 @@ export class ServicesPage implements OnInit {
                 this.actualFilter = 'pending';
                 this.filteredServices = this.services.filter(service => service.approved === null);
                 break;
+        }
+    }
+
+    ngOnDestroy(): void {
+        if (this.subscription) {
+            this.subscription.unsubscribe();
         }
     }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertController, LoadingController } from '@ionic/angular';
@@ -16,7 +16,7 @@ import { DishesService } from '../dishes.service';
     templateUrl: './add.page.html',
     styleUrls: ['./add.page.scss'],
 })
-export class AddPage implements OnInit {
+export class AddPage implements OnInit, OnDestroy {
     form: FormGroup;
     suppliers: Supplier[];
     events: Event[];
@@ -135,5 +135,15 @@ export class AddPage implements OnInit {
                 showAlert('Error creating dish', dishError(error));
             });
         });
+    }
+
+    ngOnDestroy(): void {
+        if (this.supplierSubscription) {
+            this.supplierSubscription.unsubscribe();
+        }
+
+        if (this.eventSubscription) {
+            this.eventSubscription.unsubscribe();
+        }
     }
 }

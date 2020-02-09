@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, IonInfiniteScroll, LoadingController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
@@ -10,7 +10,7 @@ import { MenusService } from './menus.service';
     templateUrl: './menus.page.html',
     styleUrls: ['./menus.page.scss'],
 })
-export class MenusPage implements OnInit {
+export class MenusPage implements OnInit, OnDestroy {
     @ViewChild(IonInfiniteScroll, {read: undefined, static: false}) infiniteScroll: IonInfiniteScroll;
     menus: Menu[];
     private subscription: Subscription;
@@ -73,6 +73,12 @@ export class MenusPage implements OnInit {
                 alertEl.present();
             });
         });
+    }
+
+    ngOnDestroy(): void {
+        if (this.subscription) {
+            this.subscription.unsubscribe();
+        }
     }
 }
 

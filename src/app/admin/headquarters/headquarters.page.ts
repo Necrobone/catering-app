@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
@@ -10,7 +10,7 @@ import { HeadquartersService } from './headquarters.service';
     templateUrl: './headquarters.page.html',
     styleUrls: ['./headquarters.page.scss'],
 })
-export class HeadquartersPage implements OnInit {
+export class HeadquartersPage implements OnInit, OnDestroy {
     headquarters: Headquarter[] = [];
     private subscription: Subscription;
 
@@ -73,6 +73,12 @@ export class HeadquartersPage implements OnInit {
                 alertEl.present();
             });
         });
+    }
+
+    ngOnDestroy(): void {
+        if (this.subscription) {
+            this.subscription.unsubscribe();
+        }
     }
 }
 

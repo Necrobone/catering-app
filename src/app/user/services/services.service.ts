@@ -78,9 +78,9 @@ export class ServicesService {
         zip: string,
         city: string,
         startDate: Date,
-        province: Province,
-        event: Event,
-        dishes: Dish[]
+        province: number,
+        event: number,
+        dishes: number[]
     ) {
         let generatedId: number;
         let newService: Service;
@@ -102,7 +102,7 @@ export class ServicesService {
                         province,
                         event,
                         dishes,
-                        [this.authService.user]
+                        [this.authService.user.id]
                     );
                     return this.http.post<{ id: number }>(
                         'http://api.test/api/services?api_token=' + this.authService.user.token,

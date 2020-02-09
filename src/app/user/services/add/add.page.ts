@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
-import { IonContent, IonSlides, LoadingController } from '@ionic/angular';
+import { AlertController, IonContent, IonSlides, LoadingController } from '@ionic/angular';
 import { CheckboxChangeEventDetail, SegmentChangeEventDetail } from '@ionic/core';
 import { Subscription } from 'rxjs';
 import { Dish } from '../../../admin/dishes/dish.model';
@@ -10,6 +10,8 @@ import { Event } from '../../../admin/events/event.model';
 import { EventsService } from '../../../admin/events/events.service';
 import { Menu } from '../../../admin/menus/menu.model';
 import { MenusService } from '../../../admin/menus/menus.service';
+import { serviceError } from '../../../admin/services/services.page';
+import { showAlert } from '../../../app.component';
 import { Province } from '../../../province.model';
 import { ProvincesService } from '../../../provinces.service';
 import { ServicesService } from '../services.service';
@@ -29,7 +31,7 @@ export class AddPage implements OnInit, OnDestroy {
     menus: Menu[] = [];
     provinces: Province[];
     selectedEvent: Event;
-    selectedDishes: Dish[] = [];
+    selectedDishes: number[] = [];
     selectedMenus: Menu[] = [];
     selectedAddress: string;
     selectedZip: string;
@@ -59,7 +61,8 @@ export class AddPage implements OnInit, OnDestroy {
         private provincesService: ProvincesService,
         private servicesService: ServicesService,
         private router: Router,
-        private loadingController: LoadingController
+        private loadingController: LoadingController,
+        private alertController: AlertController,
     ) {
     }
 
@@ -102,8 +105,68 @@ export class AddPage implements OnInit, OnDestroy {
                         this.provincesService.fetch().subscribe(() => {
                             this.formLoaded = true;
                             loadingEl.dismiss();
+                        }, error => {
+                            loadingEl.dismiss();
+                            this.alertController.create({
+                                header: 'An error ocurred!',
+                                message: 'Provinces could not be fetched. Please try again later.',
+                                buttons: [
+                                    {
+                                        text: 'Okay', handler: () => {
+                                            this.router.navigate(['user/services']);
+                                        },
+                                    },
+                                ],
+                            }).then(alertEl => {
+                                alertEl.present();
+                            });
+                        });
+                    }, error => {
+                        loadingEl.dismiss();
+                        this.alertController.create({
+                            header: 'An error ocurred!',
+                            message: 'Menus could not be fetched. Please try again later.',
+                            buttons: [
+                                {
+                                    text: 'Okay', handler: () => {
+                                        this.router.navigate(['user/services']);
+                                    },
+                                },
+                            ],
+                        }).then(alertEl => {
+                            alertEl.present();
                         });
                     });
+                }, error => {
+                    loadingEl.dismiss();
+                    this.alertController.create({
+                        header: 'An error ocurred!',
+                        message: 'Dishes could not be fetched. Please try again later.',
+                        buttons: [
+                            {
+                                text: 'Okay', handler: () => {
+                                    this.router.navigate(['user/services']);
+                                },
+                            },
+                        ],
+                    }).then(alertEl => {
+                        alertEl.present();
+                    });
+                });
+            }, error => {
+                loadingEl.dismiss();
+                this.alertController.create({
+                    header: 'An error ocurred!',
+                    message: 'Events could not be fetched. Please try again later.',
+                    buttons: [
+                        {
+                            text: 'Okay', handler: () => {
+                                this.router.navigate(['user/services']);
+                            },
+                        },
+                    ],
+                }).then(alertEl => {
+                    alertEl.present();
                 });
             });
         });
@@ -112,16 +175,12 @@ export class AddPage implements OnInit, OnDestroy {
     isBeginning() {
         this.slider.isBeginning().then(result => {
             this.firstSlide = result;
-        }).catch(error => {
-            console.log(error);
         });
     }
 
     isEnd() {
         this.slider.isEnd().then(result => {
             this.lastSlide = result;
-        }).catch(error => {
-            console.log(error);
         });
     }
 
@@ -203,16 +262,16 @@ export class AddPage implements OnInit, OnDestroy {
             return;
         }
         this.loadingController.create({
-            message: 'Creating service...'
+            message: 'Creating service...',
         }).then(loadingEl => {
             loadingEl.present();
 
             this.selectedMenus.forEach(menu => {
                 menu.dishes.forEach(dish => {
-                    const notFound = this.selectedDishes.findIndex( element => element.id === dish.id) === -1;
+                    const notFound = this.selectedDishes.findIndex(element => element === dish.id) === -1;
 
                     if (notFound) {
-                        this.selectedDishes.push(dish);
+                        this.selectedDishes.push(dish.id);
                     }
                 });
             });
@@ -222,23 +281,27 @@ export class AddPage implements OnInit, OnDestroy {
                 this.selectedZip,
                 this.selectedCity,
                 this.selectedStartDate,
-                this.selectedProvince,
-                this.selectedEvent,
-                this.selectedDishes
+                this.selectedProvince.id,
+                this.selectedEvent.id,
+                this.selectedDishes,
             ).subscribe(() => {
                 loadingEl.dismiss();
                 this.eventForm.reset();
                 this.serviceForm.reset();
                 this.router.navigate(['/user/services']);
+            }, error => {
+                loadingEl.dismiss();
+
+                showAlert('Error creating service', serviceError(error));
             });
         });
     }
 
     toggleDish(event: CustomEvent<CheckboxChangeEventDetail>) {
         if (event.detail.checked) {
-            this.selectedDishes.push(event.detail.value);
+            this.selectedDishes.push(event.detail.value.id);
         } else {
-            this.selectedDishes.splice(this.selectedDishes.indexOf(event.detail.value), 1);
+            this.selectedDishes.splice(this.selectedDishes.indexOf(event.detail.value.id), 1);
         }
     }
 

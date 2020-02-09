@@ -134,7 +134,7 @@
                         <ion-col size-sm="6" offset-sm="3">
                             <ion-item lines="none">
                                 <ion-label>Start Time</ion-label>
-                                <ion-datetime name="startDate" ngModel required #startTimeController="ngModel" display-format="h:mm A" picker-format="h:mm A" placeholder="Select Time"></ion-datetime>
+                                <ion-datetime name="startTime" ngModel required #startTimeController="ngModel" display-format="h:mm A" picker-format="h:mm A" placeholder="Select Time"></ion-datetime>
                             </ion-item>
                             <ion-item *ngIf="(formError && !startTimeController.valid) || (!startTimeController.valid && startTimeController.touched)" lines="none">
                                 <ion-label color="danger" class="ion-text-center">Start time is required</ion-label>
