@@ -14,7 +14,7 @@ export class Service {
         public province: Province|number,
         public event: Event|number,
         public dishes: Dish[]|number[],
-        public users: User[]|number[]
+        public users: User[]
     ) {}
 
     get provinceId() {
@@ -29,6 +29,15 @@ export class Service {
         const result = [];
         this.dishes.forEach(function(dish, key) {
             this.push(typeof dish === 'number' ? dish : dish.id);
+        }, result);
+
+        return result;
+    }
+
+    get usersIds() {
+        const result = [];
+        this.users.forEach(function(user, key) {
+            this.push(typeof user === 'number' ? user : user.id);
         }, result);
 
         return result;

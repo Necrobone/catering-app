@@ -102,11 +102,11 @@ export class ServicesService {
                         province,
                         event,
                         dishes,
-                        [this.authService.user.id]
+                        [this.authService.user]
                     );
                     return this.http.post<{ id: number }>(
                         'http://api.test/api/services?api_token=' + this.authService.user.token,
-                        {...newService, id: null}
+                        {...newService, id: null, users: [this.authService.user.id]}
                     );
                 }),
                 switchMap(resData => {

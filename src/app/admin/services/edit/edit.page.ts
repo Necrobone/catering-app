@@ -11,6 +11,8 @@ import { Province } from '../../../province.model';
 import { ProvincesService } from '../../../provinces.service';
 import { Dish } from '../../dishes/dish.model';
 import { DishesService } from '../../dishes/dishes.service';
+import { Employee } from '../../employees/employee.model';
+import { EmployeesService } from '../../employees/employees.service';
 import { Event } from '../../events/event.model';
 import { EventsService } from '../../events/events.service';
 import { Service } from '../service.model';
@@ -27,7 +29,8 @@ export class EditPage implements OnInit, OnDestroy {
     provinces: Province[];
     events: Event[];
     client: User;
-    employees: User[];
+    employees: Employee[];
+    serviceEmployees: User[];
     dishes: Dish[];
     service: Service;
     formLoaded = false;
@@ -35,6 +38,7 @@ export class EditPage implements OnInit, OnDestroy {
     private provinceSubscription: Subscription;
     private eventSubscription: Subscription;
     private dishSubscription: Subscription;
+    private employeeSubscription: Subscription;
     private serviceSubscription: Subscription;
 
     constructor(
@@ -42,6 +46,7 @@ export class EditPage implements OnInit, OnDestroy {
         private provincesService: ProvincesService,
         private eventsService: EventsService,
         private dishesService: DishesService,
+        private employeesService: EmployeesService,
         private router: Router,
         private loadingController: LoadingController,
         private route: ActivatedRoute,
@@ -60,7 +65,7 @@ export class EditPage implements OnInit, OnDestroy {
             this.serviceSubscription = this.servicesService.getService(+paramMap.get('id')).subscribe(service => {
                 this.service = service;
                 this.client = this.service.users.filter(user => user.role.id === USER).pop();
-                this.employees = this.service.users.filter(user => user.role.id === EMPLOYEE);
+                this.serviceEmployees = this.service.users.filter(user => user.role.id === EMPLOYEE);
 
                 if (this.service.approved === 1) {
                     this.provinceSubscription = this.provincesService.provinces.subscribe(provinces => {
@@ -75,6 +80,10 @@ export class EditPage implements OnInit, OnDestroy {
                         this.dishes = dishes;
                     });
 
+                    this.employeeSubscription = this.employeesService.employees.subscribe(employees => {
+                        this.employees = employees;
+                    });
+
                     this.loadingController.create({
                         message: 'Fetching...',
                     }).then(loadingEl => {
@@ -82,8 +91,25 @@ export class EditPage implements OnInit, OnDestroy {
                         this.provincesService.fetch().subscribe(() => {
                             this.eventsService.fetch().subscribe(() => {
                                 this.dishesService.fetch().subscribe(() => {
-                                    this.formLoaded = true;
-                                    loadingEl.dismiss();
+                                    this.employeesService.fetch().subscribe(() => {
+                                        this.formLoaded = true;
+                                        loadingEl.dismiss();
+                                    }, error => {
+                                        loadingEl.dismiss();
+                                        this.alertController.create({
+                                            header: 'An error ocurred!',
+                                            message: 'Employees could not be fetched. Please try again later.',
+                                            buttons: [
+                                                {
+                                                    text: 'Okay', handler: () => {
+                                                        this.router.navigate(['admin/services']);
+                                                    },
+                                                },
+                                            ],
+                                        }).then(alertEl => {
+                                            alertEl.present();
+                                        });
+                                    });
                                 }, error => {
                                     loadingEl.dismiss();
                                     this.alertController.create({
@@ -173,6 +199,10 @@ export class EditPage implements OnInit, OnDestroy {
                             updateOn: 'blur',
                             validators: [Validators.required],
                         }),
+                        employees: new FormControl(this.service.usersIds, {
+                            updateOn: 'blur',
+                            validators: [Validators.required],
+                        }),
                     });
                 }
             }, error => {
@@ -206,6 +236,9 @@ export class EditPage implements OnInit, OnDestroy {
             const startTime = new Date(this.form.value.startTime);
             startDate.setHours(startTime.getHours(), startTime.getMinutes(), startTime.getSeconds());
 
+            const users = this.form.value.employees;
+            users.push(this.client.id);
+
             this.servicesService.edit(
                 this.service.id,
                 this.form.value.address,
@@ -215,7 +248,7 @@ export class EditPage implements OnInit, OnDestroy {
                 +this.form.value.province,
                 +this.form.value.event,
                 this.form.value.dishes,
-                this.service.users,
+                users,
             ).subscribe(() => {
                 loadingEl.dismiss();
                 this.form.reset();
@@ -317,6 +350,10 @@ export class EditPage implements OnInit, OnDestroy {
 
         if (this.dishSubscription) {
             this.dishSubscription.unsubscribe();
+        }
+
+        if (this.employeeSubscription) {
+            this.employeeSubscription.unsubscribe();
         }
     }
 

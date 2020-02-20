@@ -1,6 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, from } from 'rxjs';
+import { Employee } from '../admin/employees/employee.model';
 import { User } from './user.model';
 import { map, tap } from 'rxjs/operators';
 import { Plugins } from '@capacitor/core';
@@ -144,6 +145,49 @@ export class AuthService implements OnDestroy {
                 if (user) {
                     this._user.next(user);
                     this.autoLogout(user.tokenDuration);
+                }
+            }),
+            map(user => {
+                return !!user;
+            })
+        );
+    }
+
+    updateProfile(updatedUser: Employee) {
+        return from(Plugins.Storage.get({key: 'authData'})).pipe(
+            map(storedData => {
+                if (!storedData || !storedData.value) {
+                    return null;
+                }
+
+                const parsedData = JSON.parse(storedData.value) as {
+                    userId: number,
+                    token: string,
+                    tokenExpirationDate: string,
+                    email: string,
+                    firstName: string,
+                    lastName: string,
+                    role: Role,
+                };
+                const expirationTime = new Date(parsedData.tokenExpirationDate);
+                if (expirationTime <= new Date()) {
+                    return null;
+                }
+
+                return new User(
+                    parsedData.userId,
+                    updatedUser ? updatedUser.firstName : parsedData.firstName,
+                    updatedUser ? updatedUser.lastName : parsedData.lastName,
+                    updatedUser ? updatedUser.email : parsedData.email,
+                    parsedData.token,
+                    parsedData.role,
+                    expirationTime
+                );
+            }),
+            tap(user => {
+                if (user) {
+                    this._user.next(user);
+                    this.setUserData(user);
                 }
             }),
             map(user => {

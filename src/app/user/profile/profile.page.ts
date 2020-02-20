@@ -82,8 +82,17 @@ export class ProfilePage implements OnInit, OnDestroy {
                 this.form.value.email,
                 this.form.value.password,
             ).subscribe(() => {
-                loadingEl.dismiss();
-                this.router.navigate(['/user']);
+                this.authService.updateProfile(this.user).subscribe((logged) => {
+                    loadingEl.dismiss();
+
+                    if (logged) {
+                        this.router.navigate(['/user']);
+                    }
+                }, error => {
+                    loadingEl.dismiss();
+
+                    showAlert('Error updating profile', userError(error));
+                });
             }, error => {
                 loadingEl.dismiss();
 

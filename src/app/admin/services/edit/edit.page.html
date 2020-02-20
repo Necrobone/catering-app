@@ -67,7 +67,7 @@
     <ion-list *ngIf="selectedSegment === 'who'">
         <ion-list-header color="secondary"><h1>Employees</h1></ion-list-header>
 
-        <ion-item *ngFor="let employee of employees">
+        <ion-item *ngFor="let employee of serviceEmployees">
             <ion-label>
                 <h2>{{ employee.firstName }} {{ employee.lastName }}</h2>
                 <p>{{ employee.email }}</p>
@@ -159,6 +159,16 @@
                         <ion-label>Dishes</ion-label>
                         <ion-select multiple="true" placeholder="Select one or more" formControlName="dishes">
                             <ion-select-option *ngFor="let dish of dishes" [value]="dish.id">{{ dish.name }}</ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col size-sm="6" offset-sm="3">
+                    <ion-item>
+                        <ion-label>Employees</ion-label>
+                        <ion-select multiple="true" placeholder="Select one or more" formControlName="employees">
+                            <ion-select-option *ngFor="let employee of employees" [value]="employee.id">{{ employee.firstName }} {{ employee.lastName }}</ion-select-option>
                         </ion-select>
                     </ion-item>
                 </ion-col>
