@@ -21,8 +21,16 @@ export class Service {
         return typeof this.province === 'number' ? this.province : this.province.id;
     }
 
+    get provinceName() {
+        return typeof this.province === 'number' ? this.province : this.province.name;
+    }
+
     get eventId() {
         return typeof this.event === 'number' ? this.event : this.event.id;
+    }
+
+    get eventName() {
+        return typeof this.event === 'number' ? this.event : this.event.name;
     }
 
     get dishesIds() {

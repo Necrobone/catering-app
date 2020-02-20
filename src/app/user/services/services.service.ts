@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { map, switchMap, take, tap } from 'rxjs/operators';
+import { environment } from '../../../environments/environment.prod';
 import { Dish } from '../../admin/dishes/dish.model';
 import { Event } from '../../admin/events/event.model';
 import { Service } from '../../admin/services/service.model';
@@ -24,7 +25,7 @@ export class ServicesService {
     fetch() {
         return this.http
             .get<{ [key: string]: Service }>(
-                `http://api.test/api/employees/${this.authService.user.id}/services?api_token=${this.authService.user.token}`
+                `${environment.api}/api/employees/${this.authService.user.id}/services?api_token=${this.authService.user.token}`
             )
             .pipe(
                 map(services => {
@@ -56,7 +57,7 @@ export class ServicesService {
 
     getService(id: number) {
         return this.http
-            .get<Service>(`http://api.test/api/services/${id}?api_token=${this.authService.user.token}`)
+            .get<Service>(`${environment.api}/api/services/${id}?api_token=${this.authService.user.token}`)
             .pipe(map(service => {
                 return new Service(
                     id,
@@ -105,7 +106,7 @@ export class ServicesService {
                         [this.authService.user]
                     );
                     return this.http.post<{ id: number }>(
-                        'http://api.test/api/services?api_token=' + this.authService.user.token,
+                        `${environment.api}/api/services?api_token=${this.authService.user.token}`,
                         {...newService, id: null, users: [this.authService.user.id]}
                     );
                 }),

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment.prod';
 import { AuthService } from '../../auth/auth.service';
 import { Service } from '../../admin/services/service.model';
 
@@ -21,7 +22,7 @@ export class ServicesService {
     fetch() {
         return this.http
             .get<{ [key: string]: Service }>(
-                `http://api.test/api/employees/${this.authService.user.id}/services?api_token=${this.authService.user.token}`
+                `${environment.api}/api/employees/${this.authService.user.id}/services?api_token=${this.authService.user.token}`
             )
             .pipe(
                 map(services => {
@@ -53,7 +54,7 @@ export class ServicesService {
 
     getService(id: number) {
         return this.http
-            .get<Service>(`http://api.test/api/services/${id}?api_token=${this.authService.user.token}`)
+            .get<Service>(`${environment.api}/api/services/${id}?api_token=${this.authService.user.token}`)
             .pipe(map(service => {
                 return new Service(
                     id,

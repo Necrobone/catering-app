@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, of } from 'rxjs';
 import { map, switchMap, take, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment.prod';
 import { AuthService } from '../../auth/auth.service';
 import { Menu } from './menu.model';
 
@@ -21,7 +22,7 @@ export class MenusService {
     fetch() {
         return this.http
             .get<{ [key: string]: Menu }>(
-                'http://api.test/api/menus?api_token=' + this.authService.user.token
+                `${environment.api}/api/menus?api_token=${this.authService.user.token}`
             )
             .pipe(
                 map(menus => {
@@ -47,7 +48,7 @@ export class MenusService {
 
     getMenu(id: number) {
         return this.http
-            .get<Menu>(`http://api.test/api/menus/${id}?api_token=${this.authService.user.token}`)
+            .get<Menu>(`${environment.api}/api/menus/${id}?api_token=${this.authService.user.token}`)
             .pipe(map(menu => {
                 return new Menu(
                     id,
@@ -76,7 +77,7 @@ export class MenusService {
                         events
                     );
                     return this.http.post<{ id: number }>(
-                        'http://api.test/api/menus?api_token=' + this.authService.user.token,
+                        `${environment.api}/api/menus?api_token=${this.authService.user.token}`,
                         {...newMenu, id: null}
                     );
                 }),
@@ -115,7 +116,7 @@ export class MenusService {
                     events
                 );
                 return this.http.put(
-                    `http://api.test/api/menus/${id}?api_token=${this.authService.user.token}`,
+                    `${environment.api}/api/menus/${id}?api_token=${this.authService.user.token}`,
                     {...updatedMenus[updatedMenuIndex], id: null}
                 );
             }),
@@ -135,7 +136,7 @@ export class MenusService {
                     }
 
                     return this.http.delete(
-                        `http://api.test/api/menus/${id}?api_token=${this.authService.user.token}`
+                        `${environment.api}/api/menus/${id}?api_token=${this.authService.user.token}`
                     );
                 }),
                 switchMap(() => {

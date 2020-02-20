@@ -1,6 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, from } from 'rxjs';
+import { environment } from '../../environments/environment.prod';
 import { Employee } from '../admin/employees/employee.model';
 import { User } from './user.model';
 import { map, tap } from 'rxjs/operators';
@@ -198,7 +199,7 @@ export class AuthService implements OnDestroy {
 
     signup(firstName: string, lastName: string, email: string, password: string, passwordConfirmation: string) {
         return this.http.post<User>(
-            `http://api.test/api/signup`,
+            `${environment.api}/api/signup`,
             {
                 first_name: firstName,
                 last_name: lastName,
@@ -211,7 +212,7 @@ export class AuthService implements OnDestroy {
 
     login(email: string, password: string) {
         return this.http.post<User>(
-            `http://api.test/api/login`,
+            `${environment.api}/api/login`,
             {
                 email,
                 password,

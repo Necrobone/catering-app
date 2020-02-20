@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, of } from 'rxjs';
 import { map, switchMap, take, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment.prod';
 import { Headquarter } from './headquarter.model';
 import { AuthService } from '../../auth/auth.service';
 
@@ -21,7 +22,7 @@ export class HeadquartersService {
     fetch() {
         return this.http
             .get<{ [key: string]: Headquarter }>(
-                'http://api.test/api/headquarters?api_token=' + this.authService.user.token
+                `${environment.api}/api/headquarters?api_token=${this.authService.user.token}`
             )
             .pipe(
                 map(headquarters => {
@@ -49,7 +50,7 @@ export class HeadquartersService {
 
     getHeadquarter(id: number) {
         return this.http
-            .get<Headquarter>(`http://api.test/api/headquarters/${id}?api_token=${this.authService.user.token}`)
+            .get<Headquarter>(`${environment.api}/api/headquarters/${id}?api_token=${this.authService.user.token}`)
             .pipe(map(headquarter => {
                 return new Headquarter(
                     id,
@@ -82,7 +83,7 @@ export class HeadquartersService {
                         province
                     );
                     return this.http.post<{ id: number }>(
-                        'http://api.test/api/headquarters?api_token=' + this.authService.user.token,
+                        `${environment.api}/api/headquarters?api_token=${this.authService.user.token}`,
                         {...newHeadquarter, id: null}
                     );
                 }),
@@ -123,7 +124,7 @@ export class HeadquartersService {
                     province
                 );
                 return this.http.put(
-                    `http://api.test/api/headquarters/${id}?api_token=${this.authService.user.token}`,
+                    `${environment.api}/api/headquarters/${id}?api_token=${this.authService.user.token}`,
                     {...updatedHeadquarters[updatedHeadquarterIndex], id: null}
                 );
             }),
@@ -143,7 +144,7 @@ export class HeadquartersService {
                     }
 
                     return this.http.delete(
-                        `http://api.test/api/headquarters/${id}?api_token=${this.authService.user.token}`
+                        `${environment.api}/api/headquarters/${id}?api_token=${this.authService.user.token}`
                     );
                 }),
                 switchMap(() => {

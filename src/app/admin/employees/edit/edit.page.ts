@@ -7,6 +7,7 @@ import { showAlert } from '../../../app.component';
 import { AuthService } from '../../../auth/auth.service';
 import { Role } from '../../../auth/role.model';
 import { RolesService } from '../../../auth/roles.service';
+import { User } from '../../../auth/user.model';
 import { Employee } from '../employee.model';
 import { employeeError } from '../employees.page';
 import { EmployeesService } from '../employees.service';
@@ -20,6 +21,7 @@ export class EditPage implements OnInit, OnDestroy {
     form: FormGroup;
     roles: Role[];
     employee: Employee;
+    user: User;
     formLoaded = false;
     private roleSubscription: Subscription;
     private employeeSubscription: Subscription;
@@ -42,6 +44,8 @@ export class EditPage implements OnInit, OnDestroy {
                 this.navCtrl.navigateBack('/admin/employees');
                 return;
             }
+
+            this.user = this.authService.user;
 
             this.roleSubscription = this.rolesService.roles.subscribe(roles => {
                 this.roles = roles;

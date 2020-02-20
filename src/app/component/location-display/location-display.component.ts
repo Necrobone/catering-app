@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AlertController, LoadingController, ModalController } from '@ionic/angular';
 import { of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../environments/environment.prod';
 import { MapModalComponent } from '../map-modal/map-modal.component';
 import { PlaceLocation } from './location.model';
 

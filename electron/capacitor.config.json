@@ -1,5 +1,5 @@
 {
-  "appId": "io.ionic.starter",
+  "appId": "com.cateringandgo.app",
   "appName": "catering-and-go",
   "bundledWebRuntime": false,
   "npmClient": "npm",

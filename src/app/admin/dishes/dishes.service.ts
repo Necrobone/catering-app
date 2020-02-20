@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, of } from 'rxjs';
 import { map, switchMap, take, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment.prod';
 import { AuthService } from '../../auth/auth.service';
 import { Dish } from './dish.model';
 
@@ -21,7 +22,7 @@ export class DishesService {
     fetch() {
         return this.http
             .get<{ [key: string]: Dish }>(
-                'http://api.test/api/dishes?api_token=' + this.authService.user.token
+                `${environment.api}/api/dishes?api_token=${this.authService.user.token}`
             )
             .pipe(
                 map(dishes => {
@@ -49,7 +50,7 @@ export class DishesService {
 
     getDish(id: number) {
         return this.http
-            .get<Dish>(`http://api.test/api/dishes/${id}?api_token=${this.authService.user.token}`)
+            .get<Dish>(`${environment.api}/api/dishes/${id}?api_token=${this.authService.user.token}`)
             .pipe(map(dish => {
                 return new Dish(
                     id,
@@ -82,7 +83,7 @@ export class DishesService {
                         events
                     );
                     return this.http.post<{ id: number }>(
-                        'http://api.test/api/dishes?api_token=' + this.authService.user.token,
+                        `${environment.api}/api/dishes?api_token=${this.authService.user.token}`,
                         {...newDish, id: null}
                     );
                 }),
@@ -123,7 +124,7 @@ export class DishesService {
                     events
                 );
                 return this.http.put(
-                    `http://api.test/api/dishes/${id}?api_token=${this.authService.user.token}`,
+                    `${environment.api}/api/dishes/${id}?api_token=${this.authService.user.token}`,
                     {...updatedDishes[updatedDishIndex], id: null}
                 );
             }),
@@ -143,7 +144,7 @@ export class DishesService {
                     }
 
                     return this.http.delete(
-                        `http://api.test/api/dishes/${id}?api_token=${this.authService.user.token}`
+                        `${environment.api}/api/dishes/${id}?api_token=${this.authService.user.token}`
                     );
                 }),
                 switchMap(() => {

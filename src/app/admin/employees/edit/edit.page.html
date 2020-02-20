@@ -57,7 +57,7 @@
                     </ion-item>
                 </ion-col>
             </ion-row>
-            <ion-row *ngIf="employee.id !== authService.user.id">
+            <ion-row *ngIf="employee.id !== user.id">
                 <ion-col size-sm="6" offset-sm="3">
                     <ion-button (click)="onDestroy()">
                         <ion-icon name="trash" slot="icon-only"></ion-icon>

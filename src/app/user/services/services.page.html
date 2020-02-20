@@ -32,10 +32,10 @@
 
             <ion-label>
                 <h2>{{ service.address }}</h2>
-                <h3>{{ service.province.name }}</h3>
+                <h3>{{ service.provinceName }}</h3>
                 <p>
-                    {{ service.startDate.toLocaleDateString('es-ES', {dateStyle: 'long'}) }}
-                    {{ service.startDate.toLocaleTimeString('es-ES', {timeStyle: 'short', hour12: true}) }}
+                    {{ service.startDate.toLocaleDateString('es-ES', {day: 'numeric', month: 'long', year: 'numeric'}) }} <br>
+                    {{ service.startDate.toLocaleTimeString('es-ES', {hour: 'numeric', minute: 'numeric', hour12: true}) }}
                 </p>
             </ion-label>
 

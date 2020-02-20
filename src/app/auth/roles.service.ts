@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment.prod';
 import { Role } from './role.model';
 import { AuthService } from './auth.service';
 
@@ -20,7 +21,7 @@ export class RolesService {
 
     fetch() {
         return this.http
-            .get<{ [key: number]: Role }>('http://api.test/api/roles?api_token=' + this.authService.user.token)
+            .get<{ [key: number]: Role }>(`${environment.api}/api/roles?api_token=${this.authService.user.token}`)
             .pipe(
                 map(roles => {
                     const result = [];

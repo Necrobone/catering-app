@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, of } from 'rxjs';
 import { map, switchMap, take, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment.prod';
 import { AuthService } from '../../auth/auth.service';
 import { Event } from './event.model';
 
@@ -21,7 +22,7 @@ export class EventsService {
     fetch() {
         return this.http
             .get<{ [key: string]: Event }>(
-                'http://api.test/api/events?api_token=' + this.authService.user.token
+                `${environment.api}/api/events?api_token=${this.authService.user.token}`
             )
             .pipe(
                 map(events => {
@@ -45,7 +46,7 @@ export class EventsService {
 
     getEvent(id: number) {
         return this.http
-            .get<Event>(`http://api.test/api/events/${id}?api_token=${this.authService.user.token}`)
+            .get<Event>(`${environment.api}/api/events/${id}?api_token=${this.authService.user.token}`)
             .pipe(map(event => {
                 return new Event(
                     id,
@@ -70,7 +71,7 @@ export class EventsService {
                         name
                     );
                     return this.http.post<{ id: number }>(
-                        'http://api.test/api/events?api_token=' + this.authService.user.token,
+                        `${environment.api}/api/events?api_token=${this.authService.user.token}`,
                         {...newEvent, id: null}
                     );
                 }),
@@ -107,7 +108,7 @@ export class EventsService {
                     name
                 );
                 return this.http.put(
-                    `http://api.test/api/events/${id}?api_token=${this.authService.user.token}`,
+                    `${environment.api}/api/events/${id}?api_token=${this.authService.user.token}`,
                     {...updatedEvents[updatedEventIndex], id: null}
                 );
             }),
@@ -127,7 +128,7 @@ export class EventsService {
                     }
 
                     return this.http.delete(
-                        `http://api.test/api/events/${id}?api_token=${this.authService.user.token}`
+                        `${environment.api}/api/events/${id}?api_token=${this.authService.user.token}`
                     );
                 }),
                 switchMap(() => {

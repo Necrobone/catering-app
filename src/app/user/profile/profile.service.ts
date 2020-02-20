@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment.prod';
 import { AuthService } from '../../auth/auth.service';
 import { Employee } from '../../admin/employees/employee.model';
 import { map, switchMap, take, tap } from 'rxjs/operators';
@@ -20,7 +21,7 @@ export class ProfileService {
 
     getProfile(id: number) {
         return this.http
-            .get<Employee>(`http://api.test/api/employees/${id}?api_token=${this.authService.user.token}`)
+            .get<Employee>(`${environment.api}/api/employees/${id}?api_token=${this.authService.user.token}`)
             .pipe(map(employee => {
                 return new Employee(
                     id,
@@ -60,7 +61,7 @@ export class ProfileService {
                 );
 
                 return this.http.put(
-                    `http://api.test/api/employees/${id}?api_token=${this.authService.user.token}`,
+                    `${environment.api}/api/employees/${id}?api_token=${this.authService.user.token}`,
                     {...updatedProfile, id: null}
                 );
             }),

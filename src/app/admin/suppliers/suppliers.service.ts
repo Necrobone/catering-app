@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, of } from 'rxjs';
 import { map, switchMap, take, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment.prod';
 import { Supplier } from './supplier.model';
 import { AuthService } from '../../auth/auth.service';
 
@@ -21,7 +22,7 @@ export class SuppliersService {
     fetch() {
         return this.http
             .get<{ [key: string]: Supplier }>(
-                'http://api.test/api/suppliers?api_token=' + this.authService.user.token
+                `${environment.api}/api/suppliers?api_token=${this.authService.user.token}`
             )
             .pipe(
                 map(suppliers => {
@@ -46,7 +47,7 @@ export class SuppliersService {
 
     getSupplier(id: number) {
         return this.http
-            .get<Supplier>(`http://api.test/api/suppliers/${id}?api_token=${this.authService.user.token}`)
+            .get<Supplier>(`${environment.api}/api/suppliers/${id}?api_token=${this.authService.user.token}`)
             .pipe(map(supplier => {
                 return new Supplier(
                     id,
@@ -73,7 +74,7 @@ export class SuppliersService {
                         headquarters
                     );
                     return this.http.post<{ id: number }>(
-                        'http://api.test/api/suppliers?api_token=' + this.authService.user.token,
+                        `${environment.api}/api/suppliers?api_token=${this.authService.user.token}`,
                         {...newSupplier, id: null}
                     );
                 }),
@@ -111,7 +112,7 @@ export class SuppliersService {
                     headquarters
                 );
                 return this.http.put(
-                    `http://api.test/api/suppliers/${id}?api_token=${this.authService.user.token}`,
+                    `${environment.api}/api/suppliers/${id}?api_token=${this.authService.user.token}`,
                     {...updatedSuppliers[updatedSupplierIndex], id: null}
                 );
             }),
@@ -131,7 +132,7 @@ export class SuppliersService {
                     }
 
                     return this.http.delete(
-                        `http://api.test/api/suppliers/${id}?api_token=${this.authService.user.token}`
+                        `${environment.api}/api/suppliers/${id}?api_token=${this.authService.user.token}`
                     );
                 }),
                 switchMap(() => {

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, of } from 'rxjs';
 import { map, switchMap, take, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment.prod';
 import { Employee } from './employee.model';
 import { AuthService } from '../../auth/auth.service';
 
@@ -21,7 +22,7 @@ export class EmployeesService {
     fetch() {
         return this.http
             .get<{ [key: string]: Employee }>(
-                'http://api.test/api/employees?api_token=' + this.authService.user.token
+                `${environment.api}/api/employees?api_token=${this.authService.user.token}`
             )
             .pipe(
                 map(employees => {
@@ -50,7 +51,7 @@ export class EmployeesService {
 
     getEmployee(id: number) {
         return this.http
-            .get<Employee>(`http://api.test/api/employees/${id}?api_token=${this.authService.user.token}`)
+            .get<Employee>(`${environment.api}/api/employees/${id}?api_token=${this.authService.user.token}`)
             .pipe(map(employee => {
                 return new Employee(
                     id,
@@ -85,7 +86,7 @@ export class EmployeesService {
                         role
                     );
                     return this.http.post<{ id: number }>(
-                        'http://api.test/api/employees?api_token=' + this.authService.user.token,
+                        `${environment.api}/api/employees?api_token=${this.authService.user.token}`,
                         {...newEmployee, id: null}
                     );
                 }),
@@ -127,7 +128,7 @@ export class EmployeesService {
                     role
                 );
                 return this.http.put(
-                    `http://api.test/api/employees/${id}?api_token=${this.authService.user.token}`,
+                    `${environment.api}/api/employees/${id}?api_token=${this.authService.user.token}`,
                     {...updatedEmployees[updatedEmployeeIndex], id: null}
                 );
             }),
@@ -147,7 +148,7 @@ export class EmployeesService {
                     }
 
                     return this.http.delete(
-                        `http://api.test/api/employees/${id}?api_token=${this.authService.user.token}`
+                        `${environment.api}/api/employees/${id}?api_token=${this.authService.user.token}`
                     );
                 }),
                 switchMap(() => {

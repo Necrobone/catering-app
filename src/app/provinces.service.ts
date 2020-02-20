@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../environments/environment.prod';
 import { AuthService } from './auth/auth.service';
 import { Province } from './province.model';
 
@@ -20,7 +21,7 @@ export class ProvincesService {
 
     fetch() {
         return this.http
-            .get<{ [key: number]: Province }>('http://api.test/api/provinces?api_token=' + this.authService.user.token)
+            .get<{ [key: number]: Province }>(`${environment.api}/api/provinces?api_token=${this.authService.user.token}`)
             .pipe(
                 map(provinces => {
                     const result = [];
