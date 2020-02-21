@@ -1,0 +1,8 @@
+{
+  "appId": "com.cateringandgo.app",
+  "appName": "catering-and-go",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www",
+  "cordova": {}
+}
