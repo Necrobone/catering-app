@@ -37,7 +37,7 @@
                         </ion-item>
                         <ion-item>
                             <ion-label position="floating">Password</ion-label>
-                            <ion-input type="password" ngModel name="password" maxlength="255" minlength="8" pattern="^.*(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\X])(?=.*[!$#%]).*$" required #passwordController="ngModel"></ion-input>
+                            <ion-input type="password" ngModel name="password" maxlength="255" minlength="8" pattern="^.*(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\X])(?=.*[@$!%*?&]).*$" required #passwordController="ngModel"></ion-input>
                         </ion-item>
                         <ion-item *ngIf="passwordController.invalid && (passwordController.dirty || passwordController.touched)" lines="none">
                             <ion-text *ngIf="passwordController.errors.required" color="danger">Password required</ion-text>
@@ -46,7 +46,7 @@
                         </ion-item>
                         <ion-item>
                             <ion-label position="floating">Repeat password</ion-label>
-                            <ion-input type="password" ngModel name="password_confirmation" maxlength="255" minlength="8" pattern="^.*(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\X])(?=.*[!$#%]).*$" required #passwordConfirmationController="ngModel"></ion-input>
+                            <ion-input type="password" ngModel name="password_confirmation" maxlength="255" minlength="8" pattern="^.*(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\X])(?=.*[@$!%*?&]).*$" required #passwordConfirmationController="ngModel"></ion-input>
                         </ion-item>
                         <ion-item *ngIf="passwordConfirmationController.invalid && (passwordConfirmationController.dirty || passwordConfirmationController.touched)" lines="none">
                             <ion-text *ngIf="passwordConfirmationController.errors.required" color="danger">Repeated Password required</ion-text>

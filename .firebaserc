@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "dwes-1557572867209"
+    "production": "catering-and-go",
+    "default": "catering-and-go"
   }
 }
