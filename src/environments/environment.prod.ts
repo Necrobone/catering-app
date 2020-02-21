@@ -1,5 +1,5 @@
 export const environment = {
     production: true,
-    googleMapsAPIKey: 'AIzaSyAyc_tBst9PxxZ3-VJzl9GISd05LaLUOLY',
+    googleMapsAPIKey: 'AIzaSyCTH8O7eRHiLgwYveqZ6xIxXR9a6nsKcEQ',
     api: 'https://cateringandgoapi.herokuapp.com',
 };
