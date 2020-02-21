@@ -22,7 +22,7 @@
     </ion-refresher>
 
     <ion-list>
-        <ion-item *ngFor="let menu of menus" [href]="'/admin/menus/edit/' + menu.id" detail>
+        <ion-item *ngFor="let menu of menus" [routerLink]="'/admin/menus/edit/' + menu.id" detail>
             <ion-label>
                 <h2>{{ menu.name }}</h2>
             </ion-label>

@@ -23,7 +23,7 @@
     </ion-segment>
 
     <ion-list>
-        <ion-item *ngFor="let service of filteredServices" [href]="'/admin/services/edit/' + service.id" detail>
+        <ion-item *ngFor="let service of filteredServices" [routerLink]="'/admin/services/edit/' + service.id" detail>
 
             <ion-label>
                 <h2>{{ service.address }}</h2>

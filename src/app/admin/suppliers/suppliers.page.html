@@ -22,7 +22,7 @@
     </ion-refresher>
 
     <ion-list>
-        <ion-item *ngFor="let supplier of suppliers" [href]="'/admin/suppliers/edit/' + supplier.id" detail>
+        <ion-item *ngFor="let supplier of suppliers" [routerLink]="'/admin/suppliers/edit/' + supplier.id" detail>
             <ion-label>
                 <h2>{{ supplier.name }}</h2>
             </ion-label>

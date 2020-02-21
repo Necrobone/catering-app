@@ -22,7 +22,7 @@
     </ion-refresher>
 
     <ion-list>
-        <ion-item *ngFor="let event of events" [href]="'/admin/events/edit/' + event.id" detail>
+        <ion-item *ngFor="let event of events" [routerLink]="'/admin/events/edit/' + event.id" detail>
             <ion-label>
                 <h2>{{ event.name }}</h2>
             </ion-label>

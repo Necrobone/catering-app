@@ -22,7 +22,7 @@
     </ion-refresher>
 
     <ion-list>
-        <ion-item *ngFor="let dish of dishes" [href]="'/admin/dishes/edit/' + dish.id" detail>
+        <ion-item *ngFor="let dish of dishes" [routerLink]="'/admin/dishes/edit/' + dish.id" detail>
             <ion-avatar slot="start">
                 <ion-img [src]="dish.image"></ion-img>
             </ion-avatar>

@@ -22,7 +22,7 @@
     </ion-refresher>
 
     <ion-list>
-        <ion-item *ngFor="let headquarter of headquarters" [href]="'/admin/headquarters/edit/' + headquarter.id" detail>
+        <ion-item *ngFor="let headquarter of headquarters" [routerLink]="'/admin/headquarters/edit/' + headquarter.id" detail>
             <ion-label>
                 <h2>{{ headquarter.name }}</h2>
                 <h3>{{ headquarter.city }}</h3>
