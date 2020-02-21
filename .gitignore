@@ -9,6 +9,7 @@
 *.sublime-project
 *.sublime-workspace
 .DS_Store
+.firebaserc
 Thumbs.db
 UserInterfaceState.xcuserstate
 $RECYCLE.BIN/
@@ -19,6 +20,7 @@ npm-debug.log*
 
 /.idea
 /.ionic
+/.firebase
 /.sass-cache
 /.sourcemaps
 /.versions
