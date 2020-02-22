@@ -64,17 +64,6 @@
         </ion-item>
     </ion-list>
 
-    <ion-list *ngIf="selectedSegment === 'who'">
-        <ion-list-header color="secondary"><h1>Employees</h1></ion-list-header>
-
-        <ion-item *ngFor="let employee of serviceEmployees">
-            <ion-label>
-                <h2>{{ employee.firstName }} {{ employee.lastName }}</h2>
-                <p>{{ employee.email }}</p>
-            </ion-label>
-        </ion-item>
-    </ion-list>
-
     <ion-list *ngIf="selectedSegment === 'what'">
         <ion-list-header color="secondary"><h1>{{ service.eventName }}</h1></ion-list-header>
 

@@ -81,7 +81,7 @@ export class ServicesService {
         startDate: Date,
         province: number,
         event: number,
-        dishes: number[]
+        dishes: Dish[]
     ) {
         let generatedId: number;
         let newService: Service;
@@ -105,9 +105,16 @@ export class ServicesService {
                         dishes,
                         [this.authService.user]
                     );
+
+                    const dishIds = [];
+
+                    dishes.forEach((dish) => {
+                        dishIds.push(dish.id);
+                    });
+
                     return this.http.post<{ id: number }>(
                         `${environment.api}/api/services?api_token=${this.authService.user.token}`,
-                        {...newService, id: null, users: [this.authService.user.id]}
+                        {...newService, id: null, dishes: dishIds, users: [this.authService.user.id]}
                     );
                 }),
                 switchMap(resData => {

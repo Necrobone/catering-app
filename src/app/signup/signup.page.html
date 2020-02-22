@@ -15,43 +15,41 @@
                             <ion-input type="text" ngModel name="first_name" maxlength="300" required #firstNameController="ngModel"></ion-input>
                         </ion-item>
                         <ion-item *ngIf="firstNameController.invalid && (firstNameController.dirty || firstNameController.touched)" lines="none">
-                            <ion-text *ngIf="firstNameController.errors.required" color="danger">First Name Required.</ion-text>
-                            <ion-text *ngIf="firstNameController.errors.maxlength" color="danger">First Name is too long.</ion-text>
+                            <ion-text *ngIf="firstNameController.errors?.required" color="danger">First Name Required.</ion-text>
+                            <ion-text *ngIf="firstNameController.errors?.maxlength" color="danger">First Name is too long.</ion-text>
                         </ion-item>
                         <ion-item>
                             <ion-label position="floating">Last Name</ion-label>
                             <ion-input type="text" ngModel name="last_name" maxlength="255" required #lastNameController="ngModel"></ion-input>
                         </ion-item>
                         <ion-item *ngIf="lastNameController.invalid && (lastNameController.dirty || lastNameController.touched)" lines="none">
-                            <ion-text *ngIf="lastNameController.errors.required" color="danger">Last Name Required.</ion-text>
-                            <ion-text *ngIf="lastNameController.errors.maxlength" color="danger">Last Name is too long.</ion-text>
+                            <ion-text *ngIf="lastNameController.errors?.required" color="danger">Last Name Required.</ion-text>
+                            <ion-text *ngIf="lastNameController.errors?.maxlength" color="danger">Last Name is too long.</ion-text>
                         </ion-item>
                         <ion-item>
                             <ion-label position="floating">E-mail</ion-label>
                             <ion-input type="email" ngModel name="email" maxlength="192" email required #emailController="ngModel"></ion-input>
                         </ion-item>
                         <ion-item *ngIf="emailController.invalid && (emailController.dirty || emailController.touched)" lines="none">
-                            <ion-text *ngIf="emailController.errors.required" color="danger">E-mail Required.</ion-text>
-                            <ion-text *ngIf="emailController.errors.maxlength" color="danger">E-mail is too long.</ion-text>
-                            <ion-text *ngIf="emailController.errors.email" color="danger">Should be a valid email address.</ion-text>
+                            <ion-text *ngIf="emailController.errors?.required" color="danger">E-mail Required.</ion-text>
+                            <ion-text *ngIf="emailController.errors?.maxlength" color="danger">E-mail is too long.</ion-text>
+                            <ion-text *ngIf="emailController.errors?.email" color="danger">Should be a valid email address.</ion-text>
                         </ion-item>
                         <ion-item>
                             <ion-label position="floating">Password</ion-label>
-                            <ion-input type="password" ngModel name="password" maxlength="255" minlength="8" pattern="^.*(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\X])(?=.*[@$!%*?&]).*$" required #passwordController="ngModel"></ion-input>
+                            <ion-input type="password" ngModel name="password" maxlength="255" minlength="8" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&]).{8,}" required #passwordController="ngModel"></ion-input>
                         </ion-item>
                         <ion-item *ngIf="passwordController.invalid && (passwordController.dirty || passwordController.touched)" lines="none">
-                            <ion-text *ngIf="passwordController.errors.required" color="danger">Password required</ion-text>
-                            <ion-text *ngIf="passwordController.errors.minlength" color="danger">Should be minimum 8 password long.</ion-text>
-                            <ion-text *ngIf="!passwordController.errors.minlength && passwordController.errors.pattern" color="danger">Should contain one uppercase and lowercase letter, one number and one special character.</ion-text>
+                            <ion-text *ngIf="passwordController.errors?.required" color="danger">Password required</ion-text>
+                            <ion-text *ngIf="passwordController.errors?.minlength" color="danger">Should be minimum 8 password long.</ion-text>
+                            <ion-text *ngIf="!passwordController.errors?.minlength && passwordController.errors?.pattern" color="danger">Should contain one uppercase and lowercase letter, one number and one special character.</ion-text>
                         </ion-item>
                         <ion-item>
                             <ion-label position="floating">Repeat password</ion-label>
-                            <ion-input type="password" ngModel name="password_confirmation" maxlength="255" minlength="8" pattern="^.*(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\X])(?=.*[@$!%*?&]).*$" required #passwordConfirmationController="ngModel"></ion-input>
+                            <ion-input type="password" ngModel name="password_confirmation" maxlength="255" minlength="8" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&]).{8,}" required #passwordConfirmationController="ngModel"></ion-input>
                         </ion-item>
                         <ion-item *ngIf="passwordConfirmationController.invalid && (passwordConfirmationController.dirty || passwordConfirmationController.touched)" lines="none">
-                            <ion-text *ngIf="passwordConfirmationController.errors.required" color="danger">Repeated Password required</ion-text>
-                            <ion-text *ngIf="passwordConfirmationController.errors.minlength" color="danger">Should be minimum 8 password long.</ion-text>
-                            <ion-text *ngIf="!passwordConfirmationController.errors.minlength && passwordController.errors.pattern" color="danger">Should contain one uppercase and lowercase letter, one number and one special character.</ion-text>
+                            <ion-text *ngIf="passwordConfirmationController.errors?.required" color="danger">Repeated Password required</ion-text>
                             <ion-text *ngIf="passwordConfirmationController.value !== passwordController.value" color="danger">Should match password.</ion-text>
                         </ion-item>
                     </ion-list>

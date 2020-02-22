@@ -9,7 +9,13 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "build-electron": "ng build --base-href=./ && ionic capacitor sync electron",
+    "build-electron-prod": "ng build --base-href=./ --prod && ionic capacitor sync electron",
+    "build-android": "ionic build && ionic capacitor sync android",
+    "build-android-prod": "ionic build --prod && ionic capacitor sync android",
+    "build-all": "npm run build-electron && npm run build-android",
+    "build-all-prod": "npm run build-electron-prod && npm run build-android-prod"
   },
   "private": true,
   "dependencies": {

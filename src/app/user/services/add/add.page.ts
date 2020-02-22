@@ -31,7 +31,7 @@ export class AddPage implements OnInit, OnDestroy {
     menus: Menu[] = [];
     provinces: Province[];
     selectedEvent: Event;
-    selectedDishes: number[] = [];
+    selectedDishes: Dish[] = [];
     selectedMenus: Menu[] = [];
     selectedAddress: string;
     selectedZip: string;
@@ -268,10 +268,10 @@ export class AddPage implements OnInit, OnDestroy {
 
             this.selectedMenus.forEach(menu => {
                 menu.dishes.forEach(dish => {
-                    const notFound = this.selectedDishes.findIndex(element => element === dish.id) === -1;
+                    const notFound = this.selectedDishes.findIndex(element => element.id === dish.id) === -1;
 
                     if (notFound) {
-                        this.selectedDishes.push(dish.id);
+                        this.selectedDishes.push(dish);
                     }
                 });
             });
@@ -299,9 +299,9 @@ export class AddPage implements OnInit, OnDestroy {
 
     toggleDish(event: CustomEvent<CheckboxChangeEventDetail>) {
         if (event.detail.checked) {
-            this.selectedDishes.push(event.detail.value.id);
+            this.selectedDishes.push(event.detail.value);
         } else {
-            this.selectedDishes.splice(this.selectedDishes.indexOf(event.detail.value.id), 1);
+            this.selectedDishes.splice(this.selectedDishes.indexOf(event.detail.value), 1);
         }
     }
 
