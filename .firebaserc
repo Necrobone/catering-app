@@ -1,6 +1,5 @@
 {
   "projects": {
-    "production": "catering-and-go",
     "default": "catering-and-go"
   }
 }

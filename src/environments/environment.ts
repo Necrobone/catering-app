@@ -5,7 +5,7 @@
 export const environment = {
     production: false,
     googleMapsAPIKey: 'AIzaSyCTH8O7eRHiLgwYveqZ6xIxXR9a6nsKcEQ',
-    api: 'http://api.test',
+    api: 'http://catering-api.test',
 };
 
 /*
